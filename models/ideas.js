@@ -6,6 +6,16 @@ const ideas = new mongoose.Schema({
         ref: 'event',
         require : true
     }, 
+    facultyID: {
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'faculty',
+        require : true
+    },
+    approve:{
+        type: Boolean,
+        require : true,
+        default: false
+    },
     name: { 
         type: String,
         required: true

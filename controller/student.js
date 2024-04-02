@@ -81,23 +81,28 @@ exports.doAddIdea = async (req, res) => {
                 name: req.body.name,
                 author: aStudent,
                 url: path,
+                facultyID: aStudent.facultyID, 
+                approve: false,
                 annonymously: true,
               });
+              console.log("facultyID", aStudent.facultyID);
             } else {
               newIdea = new idea({
                 eventID: aEvent,
                 name: req.body.name,
                 author: aStudent,
                 url: path,
+                facultyID: aStudent.facultyID,
+                approve: false,
               });
+              console.log("facultyID", aStudent.facultyID);
             }
-
             let transporter = nodemailer.createTransport({
               host: "smtp.gmail.com",
               port: 465,
               secure: true,
               auth: {
-                user: "studentgroup1gw@gmail.com",
+                user: "studentgroup4gw@gmail.com",
                 pass: "neymar9701",
               },
               tls: { rejectUnauthorized: false },
@@ -130,7 +135,7 @@ exports.doAddIdea = async (req, res) => {
             }
             content += "</div> </div>";
             let mainOptions = {
-              from: "studentgroup1gw@gmail.com",
+              from: "studentgroup4gw@gmail.com",
               to: qac_emails,
               subject:
                 "New submitted idea" +
@@ -161,8 +166,11 @@ exports.doAddIdea = async (req, res) => {
       }
     });
   }
+
   await loop();
 };
+
+
 exports.doAddFile = async (req, res) => {
   let id = req.body.idEvent;
   res.redirect("viewEventDetail?id=" + id);
