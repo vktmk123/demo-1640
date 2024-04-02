@@ -51,6 +51,7 @@ exports.addIdea = async (req, res) => {
 exports.doAddIdea = async (req, res) => {
   const fs = require("fs");
   let aStudent = await Student.findOne({ email: req.session.email });
+  let idFaculty = aStudent.faculty;
   let ideaName = req.body.name;
   req.body.name = req.body.name.replace(" ", "_");
   var idEvent = req.body.idEvent;
@@ -81,21 +82,19 @@ exports.doAddIdea = async (req, res) => {
                 name: req.body.name,
                 author: aStudent,
                 url: path,
-                facultyID: aStudent.facultyID, 
+                facultyID: idFaculty, 
                 approve: false,
                 annonymously: true,
               });
-              console.log("facultyID", aStudent.facultyID);
             } else {
               newIdea = new idea({
                 eventID: aEvent,
                 name: req.body.name,
                 author: aStudent,
                 url: path,
-                facultyID: aStudent.facultyID,
+                facultyID: idFaculty,
                 approve: false,
               });
-              console.log("facultyID", aStudent.facultyID);
             }
             let transporter = nodemailer.createTransport({
               host: "smtp.gmail.com",
