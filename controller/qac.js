@@ -1,10 +1,13 @@
 const idea = require('../models/ideas');
 const comment = require('../models/comments');
-const student = require('../models/student');
+const Coordinator = require('../models/QAcoordinator');
+const event = require("../models/event");
 const fs = require("fs");
 const Account = require('../models/user');
 const bcrypt = require('bcryptjs');
 const QAC = require('../models/QAcoordinator');
+
+const nodemailer = require('nodemailer'); // Import nodemailer
 
 
 exports.getQAC = async (req, res) => {
@@ -79,95 +82,132 @@ exports.doChangePassword = async (req, res) => {
     }
 }
 
-// ======================== View Lastest Comments ========================== //
-exports.viewLastestComment = async (req, res) => {
-    const existedQAC = await QAC.find({email: req.session.email});
-    if (req.session.email === undefined || existedQAC.length==0) {
-        res.redirect('/');
-    } else {
-        try {
-            let listComments = await comment.find();
-            let len_comments = listComments.length;
-            let distance5_comments = [];
-            let temp_len_comments = len_comments;
-            let k = 1;
-            while (temp_len_comments > 5) {
-                distance5_comments.push(5 * k);
-                k++;
-                temp_len_comments -= 5;
-            }
-            if (k > 1) {
-                distance5_comments.push(distance5_comments[k - 2] + temp_len_comments);
-            }
-            let last_comments = [];
-            if (len_comments == 0) {
-                last_comments = [];
-            }
-            else if (len_comments < 5) {
-                last_comments = listComments.reverse();
-            }
-            else {
-                last_comments = listComments.slice(-5, len_comments).reverse();
-            }
-            let lastComments_detail = [];
-            let counter = 0;
-            function callBack() {
-                if (last_comments.length === counter) {
-                    lastComments_detail.sort((a, b) => {
-                        const A = new Date(a.time)
-                        const B = new Date(b.time)
-                        if (A < B) {
-                            return 1;
-                        }
-                        else if (A > B) {
-                            return -1;
-                        }
-                        else {
-                            if (a._id < b._id) {
-                                return -1;
-                            }
-                            if (a._id > b._id) {
-                                return 1;
-                            }
-                        };
-                    });
-                }
-            }
-            for (let comment of last_comments) {
-                let objIdea = await idea.findOne({ _id: comment.ideaID });
-                let objAuthor = await student.findOne({ _id: comment.author });
-                if (objIdea === null || objAuthor === null) {
-                    if (objIdea === null)
-                        console.log('Idea lost: ', comment.ideaID);
-                    else if (objAuthor === null)
-                        console.log('Author lost: ', comment.author);
-                    continue;
-                }
-                fs.readdir(objIdea.url, (err, files) => {
-                    lastComments_detail.push({
-                        idea: objIdea,
-                        value: files,
-                        linkValue: objIdea.url.slice(7),
-                        name: objIdea.name,
-                        comment_len: objIdea.comments.length,
-                        comment_content: comment.comment,
-                        n_likes: objIdea.like,
-                        n_dislikes: objIdea.dislike,
-                        author: objAuthor,
-                        time: comment.time.toString().slice(0, -25)
-                    });
-                    counter += 1;
-                    callBack();
-                });
-            }
-            res.render('qac/viewLastestComment', { distance5_comments: distance5_comments, lastComments_detail: lastComments_detail, loginName: req.session.email });
-        }
-        catch (err) {
-            console.log(err);
-            res.render('qac/viewLastestComment', { distance5_comments: distance5_comments, lastComments_detail: lastComments_detail, loginName: req.session.email });
-        }
-    }
+// ======================== Most Comments in Idea ========================== //
+exports.viewMostComments = async (req, res) => {
+  const existedQAC = await QAC.find({email: req.session.email});
+  if (req.session.email === undefined || existedQAC.length==0) {
+      res.redirect('/');
+  } else {
+      try {
+          let listIdeas = await idea.find().populate('comments');
+          let n_ideas = listIdeas.length;
+          let distance5_ideas = [];
+          let temp_len_ideas = n_ideas;
+          let k = 1;
+          while (temp_len_ideas > 5) {
+              distance5_ideas.push(5 * k);
+              k++;
+              temp_len_ideas -= 5;
+          }
+          if (k > 1) {
+              distance5_ideas.push(distance5_ideas[k - 2] + temp_len_ideas);
+          }
+          let default_ideas = 5;
+          if (n_ideas < default_ideas) default_ideas = n_ideas;
+          // check if idea was added
+          let visited_max = [];
+          for (let m = 0; m < n_ideas; m++) {
+              visited_max.push(0);
+          }
+          // count total 'view = like+dis_like+comment'
+          let countViews = [];
+          for (let idea of listIdeas) {
+              countViews.push(idea.comments.length);
+          }
+          let topViews = [];
+          let i = 0;
+          while (i < default_ideas) {
+              let fake_max = -1;
+              let idx_max = -1;
+              let j = 0;
+              while (j < n_ideas) {
+                  if (visited_max[j] == 0 && countViews[j] >= fake_max) {
+                      fake_max = countViews[j];
+                      idx_max = j;
+                  }
+                  j++;
+              }
+              visited_max[idx_max] = 1;
+              topViews.push(listIdeas[idx_max]);
+              i++;
+          }
+          let mostViewedIdeas = [];
+          let counter = 0;
+          function callBack() {
+              if (topViews.length === counter) {
+                  mostViewedIdeas.sort((a, b) => {
+                      let A = a.comment;
+                      let B = b.comment;
+                      if (A < B) {
+                          return 1;
+                      }
+                      else if (A > B) {
+                          return -1;
+                      }
+                      else {
+                          if (a._id < b._id) {
+                              return -1;
+                          }
+                          if (a._id > b._id) {
+                              return 1;
+                          }
+                      };
+                  });
+              }
+          }
+          for (let j = 0; j < topViews.length; j++) {
+              let i = topViews[j];
+              fs.readdir(i.url, (err, files) => {
+                  mostViewedIdeas.push({
+                      idea: i,
+                      id: i._id,
+                      value: files,
+                      linkValue: i.url.slice(7),
+                      name: i.name,
+                      comment: i.comments.length,
+                      idEvent: i.eventID,
+                  });
+                  counter += 1;
+                  callBack();
+              });
+
+          };
+          res.render('qac/mostComments', { distance5_ideas: distance5_ideas, mostViewedIdeas: mostViewedIdeas, loginName: req.session.email });
+      } catch (e) {
+          console.error(e);
+          res.render('qac/mostComments', { distance5_ideas: distance5_ideas, mostViewedIdeas: mostViewedIdeas, loginName: req.session.email });
+      }
+  }
 }
+
+
+
+//comment
+exports.doComment = async (req, res) => {                                                                            
+    let aIdea = await idea.findById(req.body.idIdea);
+    let aQac = await Coordinator.findOne({ email: req.session.email });
+    let allQacs = await Coordinator.find();
+    let qacEmails = [];
+    for (let qac of allQacs) {
+      if (qac.email != aQac.email) qacEmails.push(qac.email);
+    }
+
+    newComment = new comment({
+      ideaID: req.body.idIdea,
+      author: aQac,
+      comment: req.body.comment,
+    });
+  
+     console.log(qacEmails);
+      newComment = await newComment.save();
+      aIdea.comments.push(newComment);
+      aIdea = await aIdea.save();
+      res.redirect("/qac/viewMostComments");
+    
+  };
+
+
+
 
 
 

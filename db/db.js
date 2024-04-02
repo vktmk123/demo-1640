@@ -6,8 +6,10 @@ try
         useNewUrlParser: true,
         // useFindAndModify: true
     })
+    
     console.log("connected")
 } catch (e) {
+    console.log("loi roi")
     console.log(e)
 }
 

@@ -61,6 +61,7 @@
                         
                     </div>
                 </div>
+
                 <div class="row" style="margin-bottom: 10px;">
                     <div class="col">
                         <div style="width: 700px">
@@ -73,6 +74,7 @@
                                 style="font-size: 1.2rem; border: none; color:#3e5745; background: #e2e3e4;border-radius: 5px; ">Read
                                 morecomments...</button>
                             {{/ifEquals}}
+                            
                             {{#each idea.comments}}
                             <div class="user-comment-box commented-section py-2" style="display:none;">
                                 <div class="second py-2 px-2" style="margin-left: 15px;">
@@ -99,34 +101,7 @@
                                                         {{this.comment}}
                                                     </p>
                                                 </div>
-                                                <div class="pull-right" style="margin-top: -3%;">
-                                                    <img src="/images/images.png" width="10px" height="10px">
-                                                    <span style="width: 50px;">
-                                                        <script>
-                                                            var d1 = new Date("{{this.time}}");
-                                                            var d2 = Date.now();
-                                                            var diff = Math.floor((d2 - d1) / 1000 / 60)
-                                                            if (diff < 60) {
-                                                                document.write(diff + " minutes ago");
-                                                            } else {
-
-                                                                diff = Math.floor(diff / 60);
-                                                                if (diff < 24) {
-                                                                    document.write(diff + " hours ago");
-                                                                } else {
-                                                                    diff = Math.floor(diff / 24);
-                                                                    if (diff < 365) {
-                                                                        document.write(diff + " days ago");
-                                                                    }
-                                                                    else {
-                                                                        diff = Math.floor(diff / 365);
-                                                                        document.write(diff + " years ago");
-                                                                    }
-                                                                }
-                                                            }
-                                                        </script>
-                                                    </span>
-                                                </div>
+                                                
                                             </div>
                                         </li>
                                     </ul>
@@ -136,6 +111,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="row">
                     <div class="col">
                         <div class="well" style="width: 700px">
@@ -161,11 +137,13 @@
                         </div>
                     </div>
                 </div>
+
+
             </div>
             {{/each}}
         </div>
     </div>
-    
+   
     <center>
         <div aria-label="Page navigation example" style="margin-left: 50%; margin-top: -5%">
             <ul class="pagination">
@@ -178,9 +156,10 @@
                         <input type="hidden" name="noPage" value="{{#minus page 1}} {{/minus}}">
                         {{/ifEquals}}
                         <button type="submit" class="page-link" style="width: 40px; height: 40px;"><span
-                                aria-hidden="true">&laquo;</span></button>
+                        aria-hidden="true">&laquo;</span></button>
                     </form>
                 </li>
+        
                 {{#times noPage}}
                 <li class="page-item">
                     <form method="post" action='/student/viewEventDetail/'>

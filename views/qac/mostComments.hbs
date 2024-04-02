@@ -117,11 +117,11 @@
                     <div class="col">
                         <div style="width: 700px">
                             {{#ifEquals idea.comments.length 0}}
-                                {{else}}
-                                <button class="see-less" style=" font-size: 1.2rem; border: none; color: #3e5745; ">See
-                                    Less...</button>
-                                <button class="see-more" style=" font-size: 1.2rem; border: none; color:#3e5745; ">Read more
-                                    comments...</button>
+                            {{else}}
+                            <button class="see-less" style=" font-size: 1.2rem; border: none; color: #3e5745; ">See
+                                Less...</button>
+                            <button class="see-more" style=" font-size: 1.2rem; border: none; color:#3e5745; ">Read more
+                                comments...</button>
                             {{/ifEquals}}
                             {{#each idea.comments}}
                             <div class="user-comment-box commented-section py-2" style="display:none;">
@@ -139,44 +139,13 @@
                                             </div>
                                             <div class="media-body">
                                                 <h3>
-                                                    {{#if this.annonymously}}
-                                                    Annonymously
-                                                    {{else}}
+
                                                     {{this.author.name}}
-                                                    {{/if}}
                                                 </h3>
                                                 <div class="well well-lg" style="width: 600px; padding: 10px;">
                                                     <p style="font-size: medium; margin:0; text-align: justify;">
                                                         {{this.comment}}
                                                     </p>
-                                                </div>
-                                                <div class="pull-right" style="margin-top: -3%;">
-                                                    <img src="/images/images.png" width="10px" height="10px">
-                                                    <span style="width: 50px;">
-                                                        <script>
-                                                            var d1 = new Date("{{this.time}}");
-                                                            var d2 = Date.now();
-                                                            var diff = Math.floor((d2 - d1) / 1000 / 60)
-                                                            if (diff < 60) {
-                                                                document.write(diff + " minutes ago");
-                                                            } else {
-
-                                                                diff = Math.floor(diff / 60);
-                                                                if (diff < 24) {
-                                                                    document.write(diff + " hours ago");
-                                                                } else {
-                                                                    diff = Math.floor(diff / 24);
-                                                                    if (diff < 365) {
-                                                                        document.write(diff + " days ago");
-                                                                    }
-                                                                    else {
-                                                                        diff = Math.floor(diff / 365);
-                                                                        document.write(diff + " years ago");
-                                                                    }
-                                                                }
-                                                            }
-                                                        </script>
-                                                    </span>
                                                 </div>
                                             </div>
                                         </li>
@@ -184,6 +153,25 @@
                                 </div>
                             </div>
                             {{/each}}
+                            
+                            <div class="row">
+                                <div class="col">
+                                    <div class="well" style="width: 700px">
+                                        <h4>Comments... <span class="glyphicon glyphicon-comment"></span></h4>
+                                        <form method="post" action='/qac/viewMostComments/Comment'>
+                                            <input type="hidden" name="idEvent" value="{{../idEvent}}">
+                                            <input type="hidden" name="idIdea" value="{{idea._id}}" />
+                                            <div class="form-group">
+                                                <textarea class="form-control" name="comment" row="3"></textarea>
+                                                <div class="row">
+
+                                                </div>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Send</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

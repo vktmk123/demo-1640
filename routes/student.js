@@ -22,6 +22,8 @@ const uploadQAmanager = multer({
         fieldSize:1024*1024*3
     },
 })
+
+
 router.get('/student', studentController.getStudent);
 router.get('/student/viewStudent', studentController.viewStudent);
 
@@ -36,11 +38,10 @@ router.get('/student/viewSubmittedIdeas',isStudent, studentController.viewSubmit
 router.get('/student/viewEventDetail',isStudent, studentController.viewEventDetail);
 
 router.post('/student/viewEventDetail',isStudent, studentController.viewEventDetail);
-router.post('/student/viewEventDetail/Comment',isStudent, studentController.doComment);
-router.post('/student/searchEvent',isStudent, studentController.searchEvent);
 
-// router.post('/student/addLike', studentController.addLike);
-// router.post('/student/addDislike', studentController.addDislike);
+router.post('/student/viewEventDetail/Comment',isStudent, studentController.doComment);
+
+router.post('/student/searchEvent',isStudent, studentController.searchEvent);
 
 router.get('student/testPagination',isStudent, studentController.paginations)
 

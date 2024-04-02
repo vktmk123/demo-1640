@@ -366,6 +366,7 @@ exports.doComment = async (req, res) => {
     },
     tls: { rejectUnauthorized: false },
   });
+
   let content = "";
   content += `
         <div style="padding: 10px; background-color: #003375">
@@ -395,6 +396,7 @@ exports.doComment = async (req, res) => {
   } else {
     content += '<span style="color: black"> Student name: Annonymously </span>';
   }
+
   content += "</div> </div>";
   let mainOptions = {
     from: "tempstudent1123@gmail.com",
@@ -404,6 +406,7 @@ exports.doComment = async (req, res) => {
     text: "abc",
     html: content,
   };
+  
   transporter.sendMail(mainOptions, function (err, info) {
     if (err) {
       console.error(err);
@@ -411,6 +414,7 @@ exports.doComment = async (req, res) => {
       console.log("Message sent: " + info.response);
     }
   });
+
   let tempDate = new Date();
   let compare = tempDate > aEvent.dateEnd;
   if (compare) {
