@@ -19,26 +19,6 @@
             {{/if}}
         </div>
     </div>
-    <div class="container py-5" style="position: fixed; top: 8%; margin-left: 81%;">
-        <p style="margin-bottom: 0%;"><label>Sort By:</label></p>
-        <div class="btn-group" role="group" aria-label="Basic example">
-            <form method="post" action='/student/viewEventDetail/'>
-                <input type="hidden" name="idEvent" value="{{idEvent}}">
-                <input type="hidden" name="sortBy" value="like" />
-                <button type="submit" class="btn btn-secondary">Most Likes</button>
-            </form>
-            <form method="post" action='/student/viewEventDetail'>
-                <input type="hidden" name="idEvent" value="{{idEvent}}">
-                <input type="hidden" name="sortBy" value="comment" />
-                <button type="submit" class="btn btn-secondary">Most Comments</button>
-            </form>
-            <form method="post" action='/student/viewEventDetail'>
-                <input type="hidden" name="idEvent" value="{{idEvent}}">
-                <input type="hidden" name="sortBy" value="time" />
-                <button type="submit" class="btn btn-secondary">Lastest Time</button>
-            </form>
-        </div>
-    </div>
     <div class="row">
         <div class="col" style="margin: 0% 30%;">
             {{#each listFiles}}
@@ -78,64 +58,7 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="row">
-                            {{#ifCond idLikeds idea._id}}
-                            <div class="col-sm-1">
-                                <form class="form" class="m-lg-2" method="POST" action="/student/addLike">
-                                    <input type="hidden" name="idEvent" value="{{../idEvent}}">
-                                    <input type="hidden" name="ideaID" value="{{idea._id}}">
-                                    <button class="btn btn-outline-primary" type="submit"
-                                        style="font-size: 15px; border: none;">
-                                        <i class="far fa-thumbs-up"></i>
-                                        <i>{{idea.like}}</i>
-                                    </button>
-                                </form>
-                            </div>
-                            {{else}}
-                            {{#ifCond idDislikes idea._id}}
-                            <div class="col-sm-1">
-                                <form class="form" class="m-lg-2" method="POST" action="/student/addDislike">
-                                    <input type="hidden" name="idEvent" value="{{../idEvent}}">
-                                    <input type="hidden" name="ideaID" value="{{idea._id}}">
-                                    <button class="btn btn-outline-primary" type="submit"
-                                        style="font-size: 15px; border: none;">
-                                        <i class="far fa-thumbs-down"></i>
-                                        <i>{{idea.dislike}}</i>
-                                    </button>
-                                </form>
-                            </div>
-                            {{else}}
-                            <div class="col-sm-1">
-                                <form class="form" class="m-lg-2" method="POST" action="/student/addLike">
-                                    <input type="hidden" name="idEvent" value="{{../idEvent}}">
-                                    <input type="hidden" name="ideaID" value="{{idea._id}}">
-                                    <button class="btn btn-outline-secondary" type="submit"
-                                        style="font-size: 15px; border: none;">
-                                        <i class="far fa-thumbs-up"></i>
-                                        <i>{{idea.like}}</i>
-                                    </button>
-                                </form>
-                            </div>
-                            <div class="col-sm-1">
-                                <form class="form" class="m-lg-2" method="POST" action="/student/addDislike">
-                                    <input type="hidden" name="idEvent" value="{{../idEvent}}">
-                                    <input type="hidden" name="ideaID" value="{{idea._id}}">
-                                    <button class="btn btn-outline-secondary" type="submit"
-                                        style="font-size: 15px; border: none;">
-                                        <i class="far fa-thumbs-down"></i>
-                                        <i>{{idea.dislike}}</i>
-                                    </button>
-                                </form>
-                            </div>
-                            {{/ifCond}}
-                            {{/ifCond}}
-                            <div class="col-sm-1">
-                                <div class="btn " type="submit" style="font-size: 15px; border: none;" /disabled>
-                                    <i class="fa fa-comment" style=" color: #6a6e72;"></i>
-                                    <i>{{idea.comments.length}}</i>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
                 <div class="row" style="margin-bottom: 10px;">

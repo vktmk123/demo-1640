@@ -7,8 +7,6 @@ const event = require("../models/event");
 const comment = require("../models/comments");
 const multer = require("multer");
 const { redirect } = require("express/lib/response");
-const likes = require("../models/likes");
-const dislikes = require("../models/dislikes");
 const Student = require("../models/student");
 const nodemailer = require("nodemailer");
 const QAC = require("../models/QAcoordinator");
@@ -83,8 +81,6 @@ exports.doAddIdea = async (req, res) => {
                 name: req.body.name,
                 author: aStudent,
                 url: path,
-                like: 0,
-                dislike: 0,
                 annonymously: true,
               });
             } else {
@@ -93,8 +89,6 @@ exports.doAddIdea = async (req, res) => {
                 name: req.body.name,
                 author: aStudent,
                 url: path,
-                like: 0,
-                dislike: 0,
               });
             }
 
@@ -225,24 +219,6 @@ exports.viewEventDetail = async (req, res) => {
       .populate({ path: "comments", populate: { path: "author" } })
       .populate("author");
 
-    let email = req.session.email;
-    let student = await Student.findOne({ email: email });
-
-    let listLikes = await likes.find({ studentID: { $all: student._id } });
-    let listDislikes = await dislikes.find({
-      studentID: { $all: student._id },
-    });
-
-    let likedIDs = [];
-    for (let like of listLikes) {
-      likedIDs.push(like.ideaID);
-    }
-
-    let dislikeIDs = [];
-    for (let dislike of listDislikes) {
-      dislikeIDs.push(dislike.ideaID);
-    }
-
     let aEvent = await event.findById(id);
     let tempDate = new Date();
     let compare = tempDate > aEvent.dateEnd;
@@ -250,23 +226,7 @@ exports.viewEventDetail = async (req, res) => {
     var counter = 0;
     function callBack() {
       if (listIdeas.length === counter) {
-        if (sortBy === "like") {
-          listFiles.sort((a, b) => {
-            if (b.idea.like < a.idea.like) {
-              return -1;
-            } else if (b.idea.like > a.idea.like) {
-              return 1;
-            } else {
-              if (a.idea._id < b.idea._id) {
-                return -1;
-              }
-              if (a.idea._id > b.idea._id) {
-                return 1;
-              }
-            }
-          });
-          console.log("like");
-        } else if (sortBy === "comment") {
+        if (sortBy === "comment") {
           listFiles.sort((a, b) => {
             if (b.idea.comments.length < a.idea.comments.length) {
               return -1;
@@ -338,9 +298,7 @@ exports.viewEventDetail = async (req, res) => {
           listFiles.push({
             value: files,
             linkValue: i.url.slice(7),
-            idea: i,
-            idLikeds: likedIDs,
-            idDislikes: dislikeIDs,
+            idea: i
           });
           counter = counter + 1;
           callBack();
@@ -368,6 +326,7 @@ exports.viewEventDetail = async (req, res) => {
     });
   }
 };
+
 
 exports.doComment = async (req, res) => {
   let id = req.body.idEvent;
@@ -466,115 +425,6 @@ exports.doComment = async (req, res) => {
   }
 };
 
-exports.addLike = async (req, res) => {
-  let id = req.body.idEvent;
-  let ideaID = req.body.ideaID;
-  let email = req.session.email;
-  let student = await Student.findOne({ email: email });
-  let n_students = 0;
-  try {
-    let studentID = student._id;
-    let checkExistedStudent = false;
-    await likes.findOne({ ideaID: ideaID }).then((data) => {
-      if (data) {
-        n_students = data.studentID.length;
-        try {
-          let idxRemove = -1;
-          for (let i = 0; i < data.studentID.length; i++) {
-            if (studentID.equals(data.studentID[i])) {
-              idxRemove = i;
-              checkExistedStudent = true;
-              break;
-            }
-          }
-          if (checkExistedStudent) {
-            data.studentID.splice(idxRemove, 1);
-            console.log("Removed existed student liked idea");
-            n_students -= 1;
-            data.save();
-          } else {
-            data.studentID.push(studentID);
-            n_students += 1;
-            data.save();
-            console.log("Add a new student to existed like idea");
-          }
-        } catch (e) {
-          console.log(e);
-        }
-      } else {
-        newLike = new likes({
-          ideaID: ideaID,
-          studentID: studentID,
-        });
-        newLike.save();
-        n_students += 1;
-        console.log("Add new student to new like idea");
-      }
-    });
-  } catch (e) {
-    console.log(e);
-  }
-  let objIdea = await idea.findById(ideaID);
-  objIdea.like = n_students;
-  await objIdea.save();
-  res.redirect("viewEventDetail?id=" + id);
-};
-
-exports.addDislike = async (req, res) => {
-  let id = req.body.idEvent;
-  let ideaID = req.body.ideaID;
-  let email = req.session.email;
-  let student = await Student.findOne({ email: email });
-
-  let n_students = 0;
-  try {
-    let studentID = student._id;
-    console.log(studentID);
-    let checkExistedStudent = false;
-    await dislikes.findOne({ ideaID: ideaID }).then((data) => {
-      if (data) {
-        n_students = data.studentID.length;
-        try {
-          let idxRemove = -1;
-          for (let i = 0; i < data.studentID.length; i++) {
-            if (studentID.equals(data.studentID[i])) {
-              idxRemove = i;
-              checkExistedStudent = true;
-              break;
-            }
-          }
-          if (checkExistedStudent) {
-            data.studentID.splice(idxRemove, 1);
-            n_students -= 1;
-            console.log("Removed existed student disliked idea");
-            data.save();
-          } else {
-            data.studentID.push(studentID);
-            data.save();
-            n_students += 1;
-            console.log("Add a new student to existed dislike idea");
-          }
-        } catch (e) {
-          console.log(e);
-        }
-      } else {
-        newDislike = new dislikes({
-          ideaID: ideaID,
-          studentID: studentID,
-        });
-        newDislike.save();
-        n_students += 1;
-        console.log("Add new student to new dislike idea");
-      }
-    });
-  } catch (e) {
-    console.log(e);
-  }
-  let objIdea = await idea.findOne({ _id: ideaID });
-  objIdea.dislike = n_students;
-  await objIdea.save();
-  res.redirect("viewEventDetail?id=" + id);
-};
 
 exports.paginations = async (req, res) => {
   const pageSize = 5;
