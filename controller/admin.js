@@ -1,12 +1,7 @@
 const Account = require("../models/user");
 const Student = require("../models/student");
-<<<<<<< HEAD
-const QAcoordinator = require("../models/QAcoordinator");
 const Manager = require("../models/Manager");
-=======
 const Coordinator = require("../models/Coordinator");
-const QAmanager = require("../models/QAmanager");
->>>>>>> 01c10a69510f24458eeabb906792f02100bdb651
 const event = require("../models/event");
 const Comments = require("../models/comments");
 const idea = require("../models/ideas");

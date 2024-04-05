@@ -82,7 +82,7 @@ exports.doAddIdea = async (req, res) => {
                 name: req.body.name,
                 author: aStudent,
                 url: path,
-                facultyID: idFaculty, 
+                facultyID: idFaculty,
                 approve: false,
                 annonymously: true,
               });
@@ -169,7 +169,6 @@ exports.doAddIdea = async (req, res) => {
   await loop();
 };
 
-
 exports.doAddFile = async (req, res) => {
   let id = req.body.idEvent;
   res.redirect("viewEventDetail?id=" + id);
@@ -191,7 +190,6 @@ exports.searchEvent = async (req, res) => {
     loginName: req.session.email,
   });
 };
-
 
 exports.viewSubmittedIdeas = async (req, res) => {
   let listEvent = await event.find();
@@ -305,7 +303,7 @@ exports.viewEventDetail = async (req, res) => {
           listFiles.push({
             value: files,
             linkValue: i.url.slice(7),
-            idea: i
+            idea: i,
           });
           counter = counter + 1;
           callBack();
@@ -333,7 +331,6 @@ exports.viewEventDetail = async (req, res) => {
     });
   }
 };
-
 
 exports.doComment = async (req, res) => {
   let id = req.body.idEvent;
@@ -413,7 +410,7 @@ exports.doComment = async (req, res) => {
     text: "abc",
     html: content,
   };
-  
+
   transporter.sendMail(mainOptions, function (err, info) {
     if (err) {
       console.error(err);
@@ -435,7 +432,6 @@ exports.doComment = async (req, res) => {
     res.redirect("../viewEventDetail?id=" + id);
   }
 };
-
 
 exports.paginations = async (req, res) => {
   const pageSize = 5;
