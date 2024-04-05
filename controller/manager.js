@@ -461,7 +461,11 @@ exports.numberOfIdeasByYear2 = async (req, res) => {
 }
 
 exports.numberOfPeople = async (req, res) => {
+<<<<<<< HEAD:controller/manager.js
     let role = ['Manager', 'QAcoordinator', 'Student'];
+=======
+    let role = ['QAmanager', 'Coordinator', 'Student'];
+>>>>>>> 01c10a69510f24458eeabb906792f02100bdb651:controller/qam.js
     let data = [];
     let counter = 0;
     role.forEach(async (i) => {

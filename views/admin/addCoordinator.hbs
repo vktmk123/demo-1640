@@ -8,32 +8,30 @@
     <div class="modal-dialog modal-lg" role="document" style="margin-top: 4%; margin-left: 15%">
         <div class="modal-content py-5" style="padding-left: 12%;">
             <div class="modal-header">
-                <h2 class="modal-title">Edit Quality Assurance Coordinator</h2>
+                <h2 class="modal-title">Create a Quality Assurance Coordinator</h2>
             </div>
             <div class="row" style="margin-bottom: 22px;">
                 <div class="col-md-3 border-right" style="padding-right: 20px;">
                     <div class="d-flex flex-column align-items-center text-center p-3 py-5">
-                        <img class="rounded-circle mt-5" width="150px"
-                            src="/uploads/QAcoordinator/{{aQAcoordinator.img}}">
+                        <img class="rounded-circle mt-5" width="150px" src="/images/user.png">
                     </div>
                 </div>
                 <div class="col-md-8 border-right" style="margin-top: 12px;">
-                    <form class="form" method="post" action='/admin/doEditQualityAssuranceCoordinator' id="add"
+                    <form class="form" method="post" action='/admin/doAddCoordinator' id="add"
                         enctype="multipart/form-data">
                         <div class="row">
                             <div class="col">
                                 <div class="form-group">
-                                    <input type="hidden" name="id" value="{{aQAcoordinator._id}}">
                                     <label>Full Name</label>
                                     <input class="form-control" type="text" name="name" placeholder="Full name"
-                                        value="{{aQAcoordinator.name}}">
+                                        required />
                                 </div>
                             </div>
                             <div class="col">
                                 <div class="form-group">
                                     <label>Email</label>
                                     <input class="form-control" type="text" placeholder="user@example.com" name="email"
-                                        disabled value="{{aQAcoordinator.email}}">
+                                        required />
                                     <span class="form-message badge bg-danger">{{errors.email}}</span>
                                 </div>
                             </div>
@@ -41,8 +39,7 @@
                         <div class="col">
                             <div class="form-group">
                                 <label>Date of Birth</label>
-                                <input class="form-control" type="date" name="date"
-                                    value="{{dateFormat aQAcoordinator.dateOfBirth " YYYY-MM-DD"}}" />
+                                <input class="form-control" type="date" name="date" required />
                             </div>
                         </div>
                         <div class="col mb-3">
@@ -56,7 +53,7 @@
                                 <div class="form-group">
                                     <label>Address</label>
                                     <textarea class="form-control" rows="5" placeholder="Address"
-                                        name="address">{{aQAcoordinator.address}}</textarea>
+                                        name="address"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -65,21 +62,18 @@
                             <div class="col">
                                 <div class="form-group">
                                     <label for="faculty">Faculty</label>
-                                    <select class="form-control" id="faculty" name="faculty">
-                                        <option value="" disabled>Select Faculty</option>
-                                        {{#each faculties}}
-                                        <option value="{{_id}}" {{#if (eq _id selectedFacultyId)}}selected{{/if}}>
-                                            {{name}}</option>
-                                        {{/each}}
+                                    <select class="form-control" id="faculty" name="faculty" >
+                                        <option value="" textContent="Select" selected disabled> Faculty </option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col d-flex justify-content-end">
-                                    <button class="btn btn-primary" type="submit">Save</button>
-                                    <a href="/admin/viewQualityAssuranceCoordinator" class="btn btn-warning">Cancel</a>
-                                </div>
+                        </div>
+                        <div class="row">
+                            <div class="col d-flex justify-content-end">
+                                <button class="btn btn-primary" type="submit">Save</button>
+                                <a href="/admin/viewCoordinator" class="btn btn-warning">Cancel</a>
                             </div>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -87,31 +81,27 @@
     </div>
     <script src="/js/validate.js"></script>
     <script>
-        window.addEventListener('DOMContentLoaded', async () => {
-    try {
-        const response = await fetch('/admin/getFaculties');
-        const faculties = await response.json();
+    window.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const response = await fetch('/admin/getFaculties');
+            const faculties = await response.json();
+            console.log(faculties);
 
-        const facultySelect = document.getElementById('faculty');
-        const selectedFacultyId = '{{selectedFacultyId}}'; // Lấy giá trị từ server-side hoặc bất kỳ nơi nào bạn đã lưu trữ giá trị này
+            const facultySelect = document.getElementById('faculty');
 
-        faculties.forEach(faculty => {
-            const option = document.createElement('option');
-            option.value = faculty._id;
-            option.textContent = faculty.name;
-            if (faculty._id === selectedFacultyId) {
-                option.selected = true; // Đặt thuộc tính "selected" cho lựa chọn nếu id trùng khớp với selectedFacultyId
-            }
-            facultySelect.appendChild(option);
-        });
+            faculties.forEach(faculty => {
+                const option = document.createElement('option');
+                option.value = faculty._id; // Assuming _id is the unique identifier of the faculty
+                option.textContent = faculty.name; // Assuming 'name' is the field you want to display
+                console.log(faculty._id, faculty.name);
+                facultySelect.appendChild(option);
+            });
 
-    } catch (error) {
-        console.error('Error fetching faculties:', error);
-    }
-});
-
-
-    </script>
+        } catch (error) {
+            console.error('Error fetching faculties:', error);
+        }
+    });
+</script>
 </body>
 
 </html>

@@ -55,10 +55,10 @@ router.post("/admin/searchManager", isAdmin, adminController.searchManager);
 //Faculty
 router.get("/admin/getFaculties", isAdmin, adminController.getFaculties);
 
-//QAcoordinator
-const storageQAcoordinator = multer.diskStorage({
+//Coordinator
+const storageCoordinator = multer.diskStorage({
   destination: function (req, file, callback) {
-    callback(null, "public/uploads/QAcoordinator");
+    callback(null, "public/uploads/Coordinator");
   },
   //add back the extension
   filename: function (req, file, callback) {
@@ -66,48 +66,48 @@ const storageQAcoordinator = multer.diskStorage({
   },
 });
 
-const uploadQAcoordinator = multer({
-  storage: storageQAcoordinator,
+const uploadCoordinator = multer({
+  storage: storageCoordinator,
   limits: {
     fieldSize: 1024 * 1024 * 3,
   },
 });
 router.get(
-  "/admin/viewQualityAssuranceCoordinator",
+  "/admin/viewCoordinator",
   isAdmin,
-  adminController.viewQAcoordinator
+  adminController.viewCoordinator
 );
 router.get(
-  "/admin/addQualityAssuranceCoordinator",
+  "/admin/addCoordinator",
   isAdmin,
-  adminController.addQAcoordinator
+  adminController.addCoordinator
 );
 router.post(
-  "/admin/doAddQualityAssuranceCoordinator",
+  "/admin/doAddCoordinator",
   isAdmin,
-  uploadQAcoordinator.single("picture"),
-  adminController.doAddQAcoordinator
+  uploadCoordinator.single("picture"),
+  adminController.doAddCoordinator
 );
 router.get(
-  "/admin/editQualityAssuranceCoordinator",
+  "/admin/editCoordinator",
   isAdmin,
-  adminController.editQAcoordinator
+  adminController.editCoordinator
 );
 router.post(
-  "/admin/doEditQualityAssuranceCoordinator",
+  "/admin/doEditCoordinator",
   isAdmin,
-  uploadQAcoordinator.single("picture"),
-  adminController.doEditQAcoordinator
+  uploadCoordinator.single("picture"),
+  adminController.doEditCoordinator
 );
 router.get(
-  "/admin/deleteQualityAssuranceCoordinator",
+  "/admin/deleteCoordinator",
   isAdmin,
-  adminController.deleteQAcoordinator
+  adminController.deleteCoordinator
 );
 router.post(
-  "/admin/searchQualityAssuranceCoordinator",
+  "/admin/searchCoordinator",
   isAdmin,
-  adminController.searchQAcoordinator
+  adminController.searchCoordinator
 );
 
 //Student

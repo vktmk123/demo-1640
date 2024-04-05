@@ -18,6 +18,7 @@ exports.handleLogin = async (req, res) => {
     await bcrypt.compare(password, user.password).then((doMatch) => {
       if (doMatch) {
         // console.log(user)
+<<<<<<< HEAD
         if (user.role == "admin") {
           req.session.user = user;
           req.session.email = username;
@@ -49,6 +50,40 @@ exports.handleLogin = async (req, res) => {
     console.log(error);
     return res.render("index", { errors: "Username or password is incorrect" });
   }
+=======
+        await bcrypt.compare(password, user.password).then((doMatch) => {
+            if (doMatch) {
+                // console.log(user)
+                if (user.role == 'admin') {
+                    req.session.user = user;
+                    req.session.email = username;
+                    req.session.admin = true;
+                    res.redirect('/admin');
+                }else if(user.role == 'Student'){
+                    req.session.user = user;
+                    req.session.email = username;
+                    req.session.student = true;
+                    res.redirect('/student');
+                }else if(user.role == 'QAmanager'){
+                    req.session.user = user;
+                    req.session.email = username;
+                    req.session.qam = true;
+                    res.redirect('/qam_index');
+                }else{
+                    req.session.user = user;
+                    req.session.email = username;
+                    req.session.Coordinator = true;
+                    res.redirect('/qac');
+                }
+            } else {
+                return res.render('index', { errors: 'Username or password is incorrect' })
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        return res.render('index' , { errors: 'Username or password is incorrect' });
+    }
+>>>>>>> 01c10a69510f24458eeabb906792f02100bdb651
 };
 
 exports.handleLogout = async (req, res) => {
