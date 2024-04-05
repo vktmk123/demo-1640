@@ -13,7 +13,7 @@ exports.isMng = function (req, res, next) {
   else return res.sendStatus(401);
 };
 
-exports.isQAC = function (req, res, next) {
-  if (req.session && req.session.qac) return next();
+exports.isDean = function (req, res, next) {
+  if (req.session && req.session.Dean) return next();
   else return res.sendStatus(401);
 };

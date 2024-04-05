@@ -5,35 +5,35 @@ const event = require("../models/event");
 const fs = require("fs");
 const Account = require('../models/user');
 const bcrypt = require('bcryptjs');
-const QAC = require('../models/Coordinator');
+const Dean = require('../models/Coordinator');
 
 const nodemailer = require('nodemailer'); // Import nodemailer
 
 
-exports.getQAC = async (req, res) => {
-    const existedQAC = await QAC.find({email: req.session.email});
-    if (req.session.email === undefined || existedQAC.length==0) {
+exports.getDean = async (req, res) => {
+    const existedDean = await Dean.find({email: req.session.email});
+    if (req.session.email === undefined || existedDean.length==0) {
         res.redirect('/');
     } else {
-        res.render('qac/index', { loginName: req.session.email });
+        res.render('dean/index', { loginName: req.session.email });
     }
 
 }
 
 // ======================== View Change Password ========================== //
 exports.changePassword = async (req, res) => {
-    const existedQAC = await QAC.find({email: req.session.email});
-    if (req.session.email === undefined || existedQAC.length==0) {
+    const existedDean = await Dean.find({email: req.session.email});
+    if (req.session.email === undefined || existedDean.length==0) {
         res.redirect('/');
     } else {
-        res.render('qac/changePassword', { loginName: req.session.email });
+        res.render('dean/changePassword', { loginName: req.session.email });
     }
 }
 
 // ======================== Change Password ========================== //
 exports.doChangePassword = async (req, res) => {
-    const existedQAC = await QAC.find({email: req.session.email});
-    if (req.session.email === undefined || existedQAC.length==0) {
+    const existedDean = await Dean.find({email: req.session.email});
+    if (req.session.email === undefined || existedDean.length==0) {
         res.redirect('/');
     } else {
         let user = await Account.findOne({ email: req.session.email });
@@ -62,7 +62,7 @@ exports.doChangePassword = async (req, res) => {
                     }
                 });
             if (!flag) {
-                res.render('qac/changePassword', { errors: errors, loginName: req.session.email })
+                res.render('dean/changePassword', { errors: errors, loginName: req.session.email })
             }
             else {
                 await bcrypt.genSalt(10, (err, salt) => {
@@ -71,7 +71,7 @@ exports.doChangePassword = async (req, res) => {
                         user.password = hash;
                         user = user.save();
                         req.session.user = user;
-                        res.redirect('/qac')
+                        res.redirect('/dean')
                     })
                 })
 
@@ -84,8 +84,8 @@ exports.doChangePassword = async (req, res) => {
 
 // ======================== Most Comments in Idea ========================== //
 exports.viewMostComments = async (req, res) => {
-  const existedQAC = await QAC.find({email: req.session.email});
-  if (req.session.email === undefined || existedQAC.length==0) {
+  const existedDean = await Dean.find({email: req.session.email});
+  if (req.session.email === undefined || existedDean.length==0) {
       res.redirect('/');
   } else {
       try {
@@ -172,10 +172,10 @@ exports.viewMostComments = async (req, res) => {
               });
 
           };
-          res.render('qac/mostComments', { distance5_ideas: distance5_ideas, mostViewedIdeas: mostViewedIdeas, loginName: req.session.email });
+          res.render('dean/mostComments', { distance5_ideas: distance5_ideas, mostViewedIdeas: mostViewedIdeas, loginName: req.session.email });
       } catch (e) {
           console.error(e);
-          res.render('qac/mostComments', { distance5_ideas: distance5_ideas, mostViewedIdeas: mostViewedIdeas, loginName: req.session.email });
+          res.render('dean/mostComments', { distance5_ideas: distance5_ideas, mostViewedIdeas: mostViewedIdeas, loginName: req.session.email });
       }
   }
 }
@@ -187,9 +187,9 @@ exports.doComment = async (req, res) => {
     let aIdea = await idea.findById(req.body.idIdea);
     let aQac = await Coordinator.findOne({ email: req.session.email });
     let allQacs = await Coordinator.find();
-    let qacEmails = [];
-    for (let qac of allQacs) {
-      if (qac.email != aQac.email) qacEmails.push(qac.email);
+    let deanEmails = [];
+    for (let dean of allQacs) {
+      if (dean.email != aQac.email) deanEmails.push(dean.email);
     }
 
     newComment = new comment({
@@ -198,11 +198,11 @@ exports.doComment = async (req, res) => {
       comment: req.body.comment,
     });
   
-     console.log(qacEmails);
+     console.log(deanEmails);
       newComment = await newComment.save();
       aIdea.comments.push(newComment);
       aIdea = await aIdea.save();
-      res.redirect("/qac/viewMostComments");
+      res.redirect("/dean/viewMostComments");
     
   };
 

@@ -50,13 +50,13 @@ const authRoute = require("./routes/auth");
 var adminRoute = require("./routes/admin");
 var mngRoute = require("./routes/manager");
 var studentRoute = require("./routes/student");
-const qacRoute = require("./routes/qac");
+const deanRoute = require("./routes/dean");
 
 app.use("/", authRoute);
 app.use("/", adminRoute);
 app.use("/", mngRoute);
 app.use("/", studentRoute);
-app.use("/", qacRoute);
+app.use("/", deanRoute);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT);

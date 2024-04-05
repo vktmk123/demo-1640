@@ -9,7 +9,7 @@ const multer = require("multer");
 const { redirect } = require("express/lib/response");
 const Student = require("../models/student");
 const nodemailer = require("nodemailer");
-const QAC = require("../models/Coordinator");
+const Dean = require("../models/Coordinator");
 const faculty = require("../models/faculty");
 
 exports.getStudent = async (req, res) => {
@@ -58,12 +58,12 @@ exports.doAddIdea = async (req, res) => {
   let aEvent = await event.findById(idEvent);
   let path = aEvent.url + "/" + req.body.name;
 
-  let allQacs = await QAC.find();
-  let qac_emails = [];
-  for (let qac of allQacs) {
-    qac_emails.push(qac.email);
+  let allQacs = await Dean.find();
+  let dean_emails = [];
+  for (let dean of allQacs) {
+    dean_emails.push(dean.email);
   }
-  console.log(qac_emails);
+  console.log(dean_emails);
   let count = 0;
   function loop() {
     console.log(path);
@@ -135,7 +135,7 @@ exports.doAddIdea = async (req, res) => {
             content += "</div> </div>";
             let mainOptions = {
               from: "studentgroup4gw@gmail.com",
-              to: qac_emails,
+              to: dean_emails,
               subject:
                 "New submitted idea" +
                 Math.round(Math.random() * 10000).toString(),
