@@ -12,12 +12,12 @@ const fsPromises = fs.promises;
 
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
-exports.getQAM = async (req, res) => {
-    res.render('qam/qam_index', { loginName: req.session.email })
+exports.getManager = async (req, res) => {
+    res.render('manager/manager_index', { loginName: req.session.email })
 }
 
 exports.changePassword = async (req, res) => {
-    res.render('qam/changePassword', { loginName: req.session.email })
+    res.render('manager/changePassword', { loginName: req.session.email })
 }
 
 exports.doChangePassword = async (req, res) => {
@@ -46,7 +46,7 @@ exports.doChangePassword = async (req, res) => {
                 }
             });
         if (!flag) {
-            res.render('qam/changePassword', { errors: errors, loginName: req.session.email })
+            res.render('manager/changePassword', { errors: errors, loginName: req.session.email })
         }
         else {
             await bcrypt.genSalt(10, (err, salt) => {
@@ -55,7 +55,7 @@ exports.doChangePassword = async (req, res) => {
                     user.password = hash;
                     user = user.save();
                     req.session.user = user;
-                    res.redirect('/qam_index')
+                    res.redirect('/manager_index')
                 })
             })
 
@@ -66,7 +66,7 @@ exports.doChangePassword = async (req, res) => {
 }
 
 exports.getAddEvent = async (req, res) => {
-    res.render('qam/qamAddEvent', { loginName: req.session.email })
+    res.render('manager/managerAddEvent', { loginName: req.session.email })
 }
 
 exports.doAddEvent = async (req, res) => {
@@ -131,7 +131,7 @@ exports.doAddEvent = async (req, res) => {
         dateEnd: newDate,
         url: 'public/folder/' + req.body.name
     });
-    res.redirect('/qam_index');
+    res.redirect('/manager_index');
 }
 
 exports.getViewEvent = async (req, res) => {
@@ -146,7 +146,7 @@ exports.getViewEvent = async (req, res) => {
     })
     // console.log(listCompare)
     // let compare = tempDate > aEvent.dateEnd;
-    res.render('qam/qamViewEvent', { listCompare: listCompare, loginName: req.session.email })
+    res.render('manager/managerViewEvent', { listCompare: listCompare, loginName: req.session.email })
 }
 
 exports.getEventDetail = async (req, res) => {
@@ -257,7 +257,7 @@ exports.getEventDetail = async (req, res) => {
                 console.log(noPage);
                 console.log(listFiles.length);
                 //res.render('admin/viewEventDetail', { idEvent: id, listFiles: listFiles, nameIdea: nameIdea, listComment: listComment, compare: compare, loginName: req.session.email });
-                res.render('qam/qamViewEventDetail', { idEvent: id, listFiles: listFiles, sortBy:sortBy, noPage: noPage, page: page, loginName: req.session.email });  
+                res.render('manager/managerViewEventDetail', { idEvent: id, listFiles: listFiles, sortBy:sortBy, noPage: noPage, page: page, loginName: req.session.email });  
             };
         };
         console.log(listIdeas);
@@ -275,11 +275,11 @@ exports.getEventDetail = async (req, res) => {
                 });
             })
         }else{
-            res.render('qam/qamViewEventDetail', { idEvent: id, listFiles: listFiles, sortBy:sortBy, noPage: noPage, page: page, loginName: req.session.email });  
+            res.render('manager/managerViewEventDetail', { idEvent: id, listFiles: listFiles, sortBy:sortBy, noPage: noPage, page: page, loginName: req.session.email });  
         }
     } catch (e) {
         // console.log(e);
-        res.render('qam/qamViewEventDetail', { idEvent: id, listFiles: listFiles, sortBy:sortBy, noPage: noPage, page: page, loginName: req.session.email });
+        res.render('manager/managerViewEventDetail', { idEvent: id, listFiles: listFiles, sortBy:sortBy, noPage: noPage, page: page, loginName: req.session.email });
     }
 }
 
@@ -292,13 +292,13 @@ exports.deleteEvent = async (req, res) => {
     // include node fs module
     const fs = require('fs');
     fs.rm(path, { recursive: true }, () => console.log('delete done'));
-    res.redirect('/qam/qamViewEvent');
+    res.redirect('/manager/managerViewEvent');
 }
 
 exports.editEvent = async (req, res) => {
     let id = req.query.id;
     let aEvent = await Event.findById(id);
-    res.render('qam/qamEditEvent', { aEvent: aEvent, loginName: req.session.email })
+    res.render('manager/managerEditEvent', { aEvent: aEvent, loginName: req.session.email })
 }
 
 exports.updateEvent = async (req, res) => {
@@ -311,11 +311,11 @@ exports.updateEvent = async (req, res) => {
     console.log(req.body.description)
     try {
         aEvent = await aEvent.save();
-        res.redirect('/qam/qamViewEvent');
+        res.redirect('/manager/managerViewEvent');
     }
     catch (error) {
         console.log(error);
-        res.redirect('/qam/qamViewEvent');
+        res.redirect('/manager/managerViewEvent');
     }
 }
 
@@ -418,7 +418,7 @@ exports.numberOfIdeasByYear = async (req, res) => {
 
         } else {
             console.log(listYear);
-            res.render('qam/numberOfIdeasByYear', { listYear: JSON.stringify(listYear), loginName: req.session.email })
+            res.render('manager/numberOfIdeasByYear', { listYear: JSON.stringify(listYear), loginName: req.session.email })
         }
     }
     loop();
@@ -455,13 +455,13 @@ exports.numberOfIdeasByYear2 = async (req, res) => {
         counter += 1;
         if (counter === listEvent.length) {
             console.log(data);
-            res.render('qam/numberOfIdeasByYear2', { data: JSON.stringify(data), loginName: req.session.email })
+            res.render('manager/numberOfIdeasByYear2', { data: JSON.stringify(data), loginName: req.session.email })
         }
     });
 }
 
 exports.numberOfPeople = async (req, res) => {
-    let role = ['QAmanager', 'QAcoordinator', 'Student'];
+    let role = ['Manager', 'QAcoordinator', 'Student'];
     let data = [];
     let counter = 0;
     role.forEach(async (i) => {
@@ -473,7 +473,7 @@ exports.numberOfPeople = async (req, res) => {
         counter += 1;
         if (counter === 3) {
             console.log(data);
-            res.render('qam/numberOfPeoPle', { data: JSON.stringify(data), loginName: req.session.email })
+            res.render('manager/numberOfPeoPle', { data: JSON.stringify(data), loginName: req.session.email })
         }
     });
 }
@@ -487,7 +487,7 @@ exports.searchEvent = async (req, res) => {
     let checkEmpty = validation.checkEmpty(searchText);
     const searchCondition = new RegExp(searchText, 'i');
     if (!checkEmpty) {
-        res.redirect('/qam/qamViewEvent');
+        res.redirect('/manager/managerViewEvent');
     }
     else {
         listEvent = await Event.find({ name: searchCondition });
@@ -500,6 +500,6 @@ exports.searchEvent = async (req, res) => {
             });
         })
         console.log(listCompare)
-        res.render('qam/qamViewEvent', { listCompare: listCompare, loginName: req.session.email });
+        res.render('manager/managerViewEvent', { listCompare: listCompare, loginName: req.session.email });
     }
 }

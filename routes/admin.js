@@ -15,10 +15,10 @@ router.post(
   adminController.doChangePassword
 );
 
-//QAmanager
-const storageQAmanager = multer.diskStorage({
+//Manager
+const storageManager = multer.diskStorage({
   destination: function (req, file, callback) {
-    callback(null, "public/uploads/QAmanager");
+    callback(null, "public/uploads/Manager");
     console.log(req.body);
   },
   //add back the extension
@@ -27,50 +27,30 @@ const storageQAmanager = multer.diskStorage({
   },
 });
 
-const uploadQAmanager = multer({
-  storage: storageQAmanager,
+const uploadManager = multer({
+  storage: storageManager,
   limits: {
     fieldSize: 1024 * 1024 * 3,
   },
 });
 
-router.get(
-  "/admin/viewQualityAssuranceManager",
-  isAdmin,
-  adminController.viewQAmanager
-);
-router.get(
-  "/admin/addQualityAssuranceManager",
-  isAdmin,
-  adminController.addQAmanager
-);
+router.get("/admin/viewManager", isAdmin, adminController.viewManager);
+router.get("/admin/addManager", isAdmin, adminController.addManager);
 router.post(
-  "/admin/doAddQualityAssuranceManager",
+  "/admin/doAddManager",
   isAdmin,
-  uploadQAmanager.single("picture"),
-  adminController.doAddQAmanager
+  uploadManager.single("picture"),
+  adminController.doAddManager
 );
-router.get(
-  "/admin/deleteQualityAssuranceManager",
-  isAdmin,
-  adminController.deleteQAmanager
-);
-router.get(
-  "/admin/editQualityAssuranceManager",
-  isAdmin,
-  adminController.editQAmanager
-);
+router.get("/admin/deleteManager", isAdmin, adminController.deleteManager);
+router.get("/admin/editManager", isAdmin, adminController.editManager);
 router.post(
-  "/admin/doEditQualityAssuranceManager",
+  "/admin/doEditManager",
   isAdmin,
-  uploadQAmanager.single("picture"),
-  adminController.doEditQAmanager
+  uploadManager.single("picture"),
+  adminController.doEditManager
 );
-router.post(
-  "/admin/searchQualityAssuranceManager",
-  isAdmin,
-  adminController.searchQAmanager
-);
+router.post("/admin/searchManager", isAdmin, adminController.searchManager);
 
 //Faculty
 router.get("/admin/getFaculties", isAdmin, adminController.getFaculties);
