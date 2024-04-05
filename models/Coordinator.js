@@ -1,7 +1,7 @@
 const mongoose = require("../db/db");
 const faculty = require("./faculty");
 
-const QAcoordinatorSchema = new mongoose.Schema({
+const CoordinatorSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -31,6 +31,6 @@ const QAcoordinatorSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model(
-  "Quality Assurance Coordinator",
-  QAcoordinatorSchema
+  "Marketing Coordinator",
+  CoordinatorSchema
 );

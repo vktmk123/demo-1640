@@ -9,7 +9,7 @@ const multer = require("multer");
 const { redirect } = require("express/lib/response");
 const Student = require("../models/student");
 const nodemailer = require("nodemailer");
-const QAC = require("../models/QAcoordinator");
+const QAC = require("../models/Coordinator");
 const faculty = require("../models/faculty");
 
 exports.getStudent = async (req, res) => {

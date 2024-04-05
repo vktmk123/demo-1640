@@ -36,7 +36,7 @@ exports.handleLogin = async (req, res) => {
                 }else{
                     req.session.user = user;
                     req.session.email = username;
-                    req.session.QAcoordinator = true;
+                    req.session.Coordinator = true;
                     res.redirect('/qac');
                 }
             } else {

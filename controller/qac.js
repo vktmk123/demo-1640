@@ -1,11 +1,11 @@
 const idea = require('../models/ideas');
 const comment = require('../models/comments');
-const Coordinator = require('../models/QAcoordinator');
+const Coordinator = require('../models/Coordinator');
 const event = require("../models/event");
 const fs = require("fs");
 const Account = require('../models/user');
 const bcrypt = require('bcryptjs');
-const QAC = require('../models/QAcoordinator');
+const QAC = require('../models/Coordinator');
 
 const nodemailer = require('nodemailer'); // Import nodemailer
 

@@ -1,6 +1,6 @@
 const Account = require("../models/user");
 const Student = require("../models/student");
-const QAcoordinator = require("../models/QAcoordinator");
+const Coordinator = require("../models/Coordinator");
 const QAmanager = require("../models/QAmanager");
 const event = require("../models/event");
 const Comments = require("../models/comments");
@@ -187,22 +187,23 @@ exports.getFaculties = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-//QAcoordinator
-exports.viewQAcoordinator = async (req, res) => {
-  let listQAcoordinator = await QAcoordinator.find().populate("faculty");
-  res.render("admin/viewQAcoordinator", {
-    listQAcoordinator: listQAcoordinator,
+//Coordinator
+exports.viewCoordinator = async (req, res) => {
+  let listCoordinator = await Coordinator.find().populate("faculty");
+  res.render("admin/viewCoordinator", {
+    listCoordinator: listCoordinator,
     loginName: req.session.email,
   });
 };
-exports.addQAcoordinator = async (req, res) => {
-  res.render("admin/addQAcoordinator", { loginName: req.session.email });
+
+exports.addCoordinator = async (req, res) => {
+  res.render("admin/addCoordinator", { loginName: req.session.email });
 };
-exports.doAddQAcoordinator = async (req, res) => {
-  let newQAcoordinator;
+exports.doAddCoordinator = async (req, res) => {
+  let newCoordinator;
   console.log(req.body);
   if (req.file) {
-    newQAcoordinator = new QAcoordinator({
+    newCoordinator = new Coordinator({
       name: req.body.name,
       email: req.body.email,
       dateOfBirth: new Date(req.body.date),
@@ -211,7 +212,7 @@ exports.doAddQAcoordinator = async (req, res) => {
       faculty: req.body.faculty,
     });
   } else {
-    newQAcoordinator = new QAcoordinator({
+    newCoordinator = new Coordinator({
       name: req.body.name,
       email: req.body.email,
       dateOfBirth: new Date(req.body.date),
@@ -222,7 +223,7 @@ exports.doAddQAcoordinator = async (req, res) => {
   let newAccount = new Account({
     email: req.body.email,
     password: "12345678",
-    role: "QAcoordinator",
+    role: "Coordinator",
   });
   try {
     await bcrypt.genSalt(10, (err, salt) => {
@@ -232,74 +233,74 @@ exports.doAddQAcoordinator = async (req, res) => {
         newAccount = newAccount.save();
       });
     });
-    newQAcoordinator = await newQAcoordinator.save();
+    newCoordinator = await newCoordinator.save();
     //console.log(newTrainee);
-    res.redirect("/admin/viewQualityAssuranceCoordinator");
+    res.redirect("/admin/viewCoordinator");
   } catch (error) {
     console.log(error);
-    res.redirect("/admin/viewQualityAssuranceCoordinator");
+    res.redirect("/admin/viewCoordinator");
   }
 };
-exports.editQAcoordinator = async (req, res) => {
+exports.editCoordinator = async (req, res) => {
   let id = req.query.id;
-  let aQAcoordinator = await QAcoordinator.findById(id);
+  let aCoordinator = await Coordinator.findById(id);
 
-  res.render("admin/editQAcoordinator", {
-    aQAcoordinator: aQAcoordinator,
+  res.render("admin/editCoordinator", {
+    aCoordinator: aCoordinator,
     loginName: req.session.email,
   });
 };
-exports.doEditQAcoordinator = async (req, res) => {
+exports.doEditCoordinator = async (req, res) => {
   let id = req.body.id;
-  let aQAcoordinator = await QAcoordinator.findById(id);
+  let aCoordinator = await Coordinator.findById(id);
 
   try {
     if (req.file) {
-      aQAcoordinator.img = req.file.filename;
+      aCoordinator.img = req.file.filename;
     }
-    aQAcoordinator.name = req.body.name;
-    aQAcoordinator.dateOfBirth = new Date(req.body.date);
-    aQAcoordinator.address = req.body.address;
-    aQAcoordinator.faculty = req.body.faculty;
-    aQAcoordinator = await aQAcoordinator.save();
-    res.redirect("/admin/viewQualityAssuranceCoordinator");
+    aCoordinator.name = req.body.name;
+    aCoordinator.dateOfBirth = new Date(req.body.date);
+    aCoordinator.address = req.body.address;
+    aCoordinator.faculty = req.body.faculty;
+    aCoordinator = await aCoordinator.save();
+    res.redirect("/admin/viewCoordinator");
   } catch (error) {
     console.log(error);
-    res.redirect("/admin/viewQualityAssuranceCoordinator");
+    res.redirect("/admin/viewCoordinator");
   }
 };
 
-exports.deleteQAcoordinator = async (req, res) => {
+exports.deleteCoordinator = async (req, res) => {
   let id = req.query.id;
-  let aQAcoordinator = await QAcoordinator.findById(id);
-  let email = aQAcoordinator.email;
+  let aCoordinator = await Coordinator.findById(id);
+  let email = aCoordinator.email;
   try {
     await Account.deleteOne({ email: email });
     console.log("Account is deleted");
   } catch (err) {
     console.error(err);
   }
-  await QAcoordinator.findByIdAndDelete(id).then((data = {}));
+  await Coordinator.findByIdAndDelete(id).then((data = {}));
 
-  res.redirect("/admin/viewQualityAssuranceCoordinator");
+  res.redirect("/admin/viewCoordinator");
 };
 
-exports.searchQAcoordinator = async (req, res) => {
+exports.searchCoordinator = async (req, res) => {
   const searchText = req.body.keyword;
   //console.log(req.body.keyword);
-  let listQAcoordinator;
+  let listCoordinator;
   let checkAlphaName = validation.checkAlphabet(searchText);
   let checkEmpty = validation.checkEmpty(searchText);
   const searchCondition = new RegExp(searchText, "i");
 
   //console.log(checkEmpty);
   if (!checkEmpty) {
-    res.redirect("/admin/viewQualityAssuranceCoordinator");
+    res.redirect("/admin/viewCoordinator");
   } else if (checkAlphaName) {
-    listQAcoordinator = await QAcoordinator.find({ name: searchCondition });
+    listCoordinator = await Coordinator.find({ name: searchCondition });
   }
-  res.render("admin/viewQAcoordinator", {
-    listQAcoordinator: listQAcoordinator,
+  res.render("admin/viewCoordinator", {
+    listCoordinator: listCoordinator,
     loginName: req.session.email,
   });
 };

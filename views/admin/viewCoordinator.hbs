@@ -9,11 +9,11 @@
             <div class="form-group">
                 <label>Search by Name:</label>
                 <div class="input-group">
-                    <a href="/admin/addQualityAssuranceCoordinator" class="btn btn-success" style="margin-left: 5%;">
+                    <a href="/admin/addCoordinator" class="btn btn-success" style="margin-left: 5%;">
                         <span class="glyphicon glyphicon-plus"></span>
-                        <span><strong>Add new Quality Assurance Coordinator</strong></span>
+                        <span><strong>Add new Coordinator</strong></span>
                     </a>
-                    <form class="form btn-group align-top" method="post" action="/admin/searchQualityAssuranceCoordinator"
+                    <form class="form btn-group align-top" method="post" action="/admin/searchCoordinator"
                         style="margin-left: 20%; width: 40%;  flex: none;">
                         <input type="search" name="keyword" class="form-control rounded" placeholder="Search by name "
                             aria-label="Search" aria-describedby="search-addon" />
@@ -41,7 +41,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {{#each listQAcoordinator}}
+                                {{#each listCoordinator}}
                                 <tr>
                                     <td class="text-nowrap align-middle">{{name}}</td>
                                     <td class="text-nowrap align-middle">
@@ -54,11 +54,11 @@
                                     <td class="text-nowrap align-middle">{{address}}</td>
                                     <td class="text-center align-middle">
                                         <div class="btn-group align-top">
-                                            <a href="/admin/editQualityAssuranceCoordinator?id={{_id}}" class="btn btn-success">
+                                            <a href="/admin/editCoordinator?id={{_id}}" class="btn btn-success">
                                                 <span class="glyphicon glyphicon-edit"></span>
                                                 <span><strong>Edit</strong></span>
                                             </a>
-                                            <a href="/admin/deleteQualityAssuranceCoordinator?id={{_id}}" class="btn btn-danger"
+                                            <a href="/admin/deleteCoordinator?id={{_id}}" class="btn btn-danger"
                                                 onclick="return confirm('Are you sure to delete this user?')">
                                                 <span class="glyphicon glyphicon-remove"></span>
                                                 <span><strong>Delete</strong></span>

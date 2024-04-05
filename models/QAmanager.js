@@ -24,4 +24,4 @@ const QAmanagerSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Quality Assurance Manager', QAmanagerSchema);
+module.exports = mongoose.model('marketing Manager', QAmanagerSchema);
