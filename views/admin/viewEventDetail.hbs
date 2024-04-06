@@ -1,29 +1,11 @@
-<html lang="en">
+    <html lang="en">
 
 {{> head}}
 
 <body class="sb-nav-fixed">
     {{> adminHeader}}
-    <div class="container py-5" style="position: fixed; top: 8%; margin-left: 81%;">
-        <p style="margin-bottom: 0%;"><label>Sort By:</label></p>
-        <div class="btn-group" role="group" aria-label="Basic example">
-            <form method="post" action='/admin/viewEventDetail/'>
-                <input type="hidden" name="idEvent" value="{{idEvent}}">
-                <input type="hidden" name="sortBy" value="like" />
-                <button type="submit" class="btn btn-secondary">Most Likes</button>
-            </form>
-            <form method="post" action='/admin/viewEventDetail'>
-                <input type="hidden" name="idEvent" value="{{idEvent}}">
-                <input type="hidden" name="sortBy" value="comment" />
-                <button type="submit" class="btn btn-secondary">Most Comments</button>
-            </form>
-            <form method="post" action='/admin/viewEventDetail'>
-                <input type="hidden" name="idEvent" value="{{idEvent}}">
-                <input type="hidden" name="sortBy" value="time" />
-                <button type="submit" class="btn btn-secondary">Lastest Time</button>
-            </form>
-        </div>
-    </div>
+    
+    
     <div class="row">
         <div class="col" style="margin: 3% 30%;">
             {{#each listFiles}}
@@ -63,26 +45,6 @@
                                     </div>
                                 </li>
                             </ul>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-1">
-                                <div class="btn " style="font-size: 15px; border: none;" /disabled>
-                                    <i class="far fa-thumbs-up"></i>
-                                    <i>{{idea.like}}</i>
-                                </div>
-                            </div>
-                            <div class="col-sm-1">
-                                <div class="btn " type="submit" style="font-size: 15px; border: none;" /disabled>
-                                    <i class="far fa-thumbs-down"></i>
-                                    <i>{{idea.dislike}}</i>
-                                </div>
-                            </div>
-                            <div class="col-sm-1">
-                                <div class="btn " type="submit" style="font-size: 15px; border: none;" /disabled>
-                                    <i class="fa fa-comment" style=" color: #6a6e72;"></i>
-                                    <i>{{idea.comments.length}}</i>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
