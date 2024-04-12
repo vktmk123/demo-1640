@@ -4,26 +4,7 @@
 
 <body class="sb-nav-fixed">
     {{> managerHeader}}
-    <div class="container py-5" style="position: fixed; top: 8%; margin-left: 81%;">
-        <p style="margin-bottom: 0%;"><label>Sort By:</label></p>
-        <div class="btn-group" role="group" aria-label="Basic example">
-            <form method="post" action='/manager/managerViewEventDetail'>
-                <input type="hidden" name="idEvent" value="{{idEvent}}">
-                <input type="hidden" name="sortBy" value="like" />
-                <button type="submit" class="btn btn-secondary">Most Likes</button>
-            </form>
-            <form method="post" action='/manager/managerViewEventDetail'>
-                <input type="hidden" name="idEvent" value="{{idEvent}}">
-                <input type="hidden" name="sortBy" value="comment" />
-                <button type="submit" class="btn btn-secondary">Most Comments</button>
-            </form>
-            <form method="post" action='/manager/managerViewEventDetail'>
-                <input type="hidden" name="idEvent" value="{{idEvent}}">
-                <input type="hidden" name="sortBy" value="time" />
-                <button type="submit" class="btn btn-secondary">Latest Time</button>
-            </form>
-        </div>
-    </div>
+
     <div class="row">
         <div class="col" style="margin: 3% 30%;">
             {{#each listFiles}}

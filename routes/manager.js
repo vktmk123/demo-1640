@@ -25,7 +25,7 @@ router.get("/manager/managerDeleteEvent", isMng, managerController.deleteEvent);
 router.get("/manager/managerEditEvent", isMng, managerController.editEvent);
 router.post("/manager/doEditEvent", isMng, managerController.updateEvent);
 router.get("/manager/downloadZip", isMng, managerController.downloadZip);
-router.get("/manager/downloadCSV", isMng, managerController.downloadCSV);
+// router.get("/manager/downloadCSV", isMng, managerController.downloadCSV);
 
 router.get(
   "/manager/numberOfIdeasByYear",

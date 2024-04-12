@@ -357,52 +357,6 @@ exports.downloadZip = async (req, res) => {
   res.send(data);
 };
 
-exports.downloadCSV = async (req, res) => {
-  let id = req.query.id;
-  let aEvent = await Event.findById(id);
-  let path = aEvent.name + ".csv";
-  const csvWriter = createCsvWriter({
-    path: path,
-    header: [
-      { id: "_id", title: "ID" },
-      { id: "event", title: "Event Name" },
-      { id: "name", title: "Name" },
-      { id: "url", title: "URL" },
-      { id: "author", title: "Author" },
-      { id: "time", title: "Time" },
-      { id: "like", title: "Like" },
-      { id: "dislike", title: "Dislike" },
-      { id: "comment", title: "Comments" },
-      { id: "__v", title: "__v" },
-    ],
-  });
-  let listIdeas = await idea
-    .find({ eventID: id })
-    .populate({ path: "comments", populate: { path: "author" } })
-    .populate("author")
-    .populate("eventID");
-  let CSVAttribute = [];
-  listIdeas.forEach((element) => {
-    let listComment = [];
-    element.comments.forEach((i) => {
-      listComment.push(i.comment);
-    });
-    CSVAttribute.push({
-      _id: element._id,
-      event: element.eventID.name,
-      name: element.name,
-      url: element.url,
-      author: element.author.name,
-      time: element.time,
-      like: element.like,
-      dislike: element.dislike,
-      comment: listComment,
-    });
-  });
-  const data = CSVAttribute;
-  csvWriter.writeRecords(data).then(() => res.download(path));
-};
-
 exports.numberOfIdeasByYear = async (req, res) => {
   let yearStart = 2020;
   let yearEnd = 2025;
