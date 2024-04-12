@@ -8,6 +8,8 @@ router.get('/dean',deanController.getDean);
 // router.post('/dean/viewMostComments/Comment',deanController.doComment);
 router.get('/dean/viewMostComments',deanController.viewMostComments);
 
+
+router.get('/dean/view_ideas_by_faculty',deanController.view_ideas_by_faculty);
 router.post('/dean/viewMostComments/Comment', deanController.doComment);
 
 router.get('/dean/changePassword', deanController.changePassword);

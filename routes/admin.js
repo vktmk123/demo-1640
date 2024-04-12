@@ -129,19 +129,10 @@ const uploadStudent = multer({
 });
 router.get("/admin/viewStudent", isAdmin, adminController.viewStudent);
 router.get("/admin/addStudent", isAdmin, adminController.addStudent);
-router.post(
-  "/admin/doAddStudent",
-  isAdmin,
-  uploadStudent.single("picture"),
-  adminController.doAddStudent
-);
+router.post("/admin/doAddStudent", isAdmin, uploadStudent.single("picture"), adminController.doAddStudent);
+
 router.get("/admin/editStudent", isAdmin, adminController.editStudent);
-router.post(
-  "/admin/doEditStudent",
-  isAdmin,
-  uploadStudent.single("picture"),
-  adminController.doEditStudent
-);
+router.post("/admin/doEditStudent", isAdmin, uploadStudent.single("picture"), adminController.doEditStudent);
 router.get("/admin/deleteStudent", isAdmin, adminController.deleteStudent);
 router.post("/admin/searchStudent", isAdmin, adminController.searchStudent);
 
@@ -150,11 +141,11 @@ router.post("/admin/searchEvent", isAdmin, adminController.searchEvent);
 router.get("/admin/event/edit", isAdmin, adminController.editDate);
 router.post("/admin/doEditEvent", isAdmin, adminController.doEditDate);
 
-router.get(
-  "/admin/viewSubmittedIdeas",
-  isAdmin,
-  adminController.viewSubmittedIdeas
-);
+router.get("/admin/AddEvent", isAdmin, adminController.getAddEvent);
+router.post("/admin/doAddEvent", isAdmin, adminController.doAddEvent);
+
+
+router.get("/admin/viewSubmittedIdeas", isAdmin, adminController.viewSubmittedIdeas);
 router.get("/admin/viewEventDetail", isAdmin, adminController.viewEventDetail);
 router.post("/admin/viewEventDetail", isAdmin, adminController.viewEventDetail);
 module.exports = router;

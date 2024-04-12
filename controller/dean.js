@@ -181,9 +181,6 @@ exports.viewMostComments = async (req, res) => {
 }
 
 
-
-
-
 //comment
 exports.doComment = async (req, res) => {                                                                            
     let aIdea = await idea.findById(req.body.idIdea);
@@ -207,6 +204,15 @@ exports.doComment = async (req, res) => {
       res.redirect("/dean/viewMostComments");
     
   };
+
+exports.view_ideas_by_faculty = async (req, res) => {
+    let listIdeas = await idea.find().populate('facultyID');
+    console.log(listIdeas);
+    res.render('dean/view_ideas_by_faculty', { 
+        listIdeas: listIdeas, 
+        loginName: req.session.email
+        });
+}
 
 
 

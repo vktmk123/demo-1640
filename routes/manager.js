@@ -7,8 +7,8 @@ const { isMng } = require("../middleware/auth");
 
 // router.get('/manager_index', isMng, managerController.getManager);
 router.get("/manager_index", isMng, managerController.getManager);
-router.get("/manager/managerAddEvent", isMng, managerController.getAddEvent);
-router.post("/manager/doAddEvent", isMng, managerController.doAddEvent);
+// router.get("/manager/managerAddEvent", isMng, managerController.getAddEvent);
+// router.post("/manager/doAddEvent", isMng, managerController.doAddEvent);
 router.get("/manager/managerViewEvent", isMng, managerController.getViewEvent);
 router.get(
   "/manager/managerViewEventDetail",

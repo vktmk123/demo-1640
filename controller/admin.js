@@ -70,6 +70,7 @@ exports.viewManager = async (req, res) => {
     loginName: req.session.email,
   });
 };
+
 exports.addManager = async (req, res) => {
   res.render("admin/addManager", { loginName: req.session.email });
 };
@@ -601,4 +602,69 @@ exports.viewEventDetail = async (req, res) => {
       loginName: req.session.email,
     });
   }
+};
+
+exports.getAddEvent = async (req, res) => {
+  res.render("admin/AddEvent", { loginName: req.session.email });
+};
+
+exports.doAddEvent = async (req, res) => {
+  const fs = require("fs");
+  let date = new Date();
+  let newDate = new Date();
+  if (date.getMonth() == "1" || "3" || "5" || "7" || "8" || "10" || "12") {
+    if (date.getDate() + 14 > 31) {
+      let tempDate = 14 - (31 - date.getDate() + 1);
+      let tempMonth = date.getMonth() + 1;
+      newDate.setDate(tempDate);
+      newDate.setMonth(tempMonth);
+    } else {
+      newDate.setDate(date.getDate() + 14);
+    }
+  } else if (date.getMonth() == "4" || "6" || "9" || "11") {
+    if (date.getDate() + 14 > 30) {
+      let tempDate = 14 - (30 - date.getDate() + 1);
+      let tempMonth = date.getMonth() + 1;
+      newDate.setDate(tempDate);
+      newDate.setMonth(tempMonth);
+    } else {
+      newDate.setDate(date.getDate() + 14);
+    }
+  } else if (date.getMonth() == "2") {
+    if (date.getDate() + 14 > 28) {
+      let tempDate = 14 - (28 - date.getDate() + 1);
+      let tempMonth = date.getMonth() + 1;
+      newDate.setDate(tempDate);
+      newDate.setMonth(tempMonth);
+    } else {
+      newDate.setDate(date.getDate() + 14);
+    }
+  }
+  console.log(req.body.name);
+  fs.access("public/folder/" + req.body.name, (error) => {
+    // To check if the given directory
+    // already exists or not
+    if (error) {
+      // If current directory does not exist
+      // then create it
+      fs.mkdir("public/folder/" + req.body.name, (error) => {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("New Directory created successfully !!");
+        }
+      });
+    } else {
+      console.log("Given Directory already exists !!");
+    }
+  });
+
+  await event.create({
+    name: req.body.name,
+    description: req.body.description,
+    dateStart: date,
+    dateEnd: newDate,
+    url: "public/folder/" + req.body.name,
+  });
+  res.redirect("/admin/viewEvent");
 };
