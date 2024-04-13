@@ -184,16 +184,16 @@ exports.viewMostComments = async (req, res) => {
 //comment
 exports.doComment = async (req, res) => {                                                                            
     let aIdea = await idea.findById(req.body.idIdea);
-    let aQac = await Coordinator.findOne({ email: req.session.email });
-    let allQacs = await Coordinator.find();
+    let aDean = await Coordinator.findOne({ email: req.session.email });
+    let allDeans = await Coordinator.find();
     let deanEmails = [];
-    for (let dean of allQacs) {
-      if (dean.email != aQac.email) deanEmails.push(dean.email);
+    for (let dean of allDeans) {
+      if (dean.email != aDean.email) deanEmails.push(dean.email);
     }
 
     newComment = new comment({
       ideaID: req.body.idIdea,
-      author: aQac,
+      author: aDean,
       comment: req.body.comment,
     });
   
@@ -211,9 +211,83 @@ exports.view_ideas_by_faculty = async (req, res) => {
     res.render('dean/view_ideas_by_faculty', { 
         listIdeas: listIdeas, 
         loginName: req.session.email
-        });
+    });
 }
 
+exports.viewIdeaByFaculty = async (req, res) => {
+    const existedQAC = await Dean.find({ email: req.session.email });
+    if (req.session.email === undefined || existedQAC.length == 0) {
+        res.redirect('/');
+    } else {
+        const facultyID = existedQAC[0].faculty;
+        const page = req.query.page || 1;
+        const perPage = 5;
+        const totalIdeas = await idea.countDocuments({ facultyID: facultyID });
+        const ideas = await idea.find({ facultyID: facultyID })
+            .skip((perPage * page) - perPage)
+            .limit(perPage)
+            .exec();
+        const paginateIdeas = paginate(ideas, totalIdeas, perPage, page);
+        res.render('dean/viewIdeaByFaculty', {
+            ideas: paginateIdeas.docs, currentPage: paginateIdeas.currentPage,
+            hasNextPage: paginateIdeas.hasNextPage, hasPreviousPage: paginateIdeas.hasPreviousPage,
+            nextPage: paginateIdeas.nextPage, previousPage: paginateIdeas.previousPage,
+            totalItems: totalIdeas, totalPages: paginateIdeas.totalPages,
+            loginName: req.session.email
+        });
+    }
+}
+
+exports.selectIdeaToPublish = async (req, res) => {
+    const existedQAC = await Dean.find({ email: req.session.email });
+    if (req.session.email === undefined || existedQAC.length == 0) {
+        res.redirect('/');
+    } else {
+        const facultyID = existedQAC[0].faculty;
+        const ideaID = req.body.ideaID;
+        const ideas = await idea.findByIdAndUpdate({_id: ideaID, facultyID: facultyID}, {approve: true});
+        res.redirect('/dean/viewIdeaByFaculty');
+    }
+}
+
+exports.viewIdeaPublished = async (req, res) => {
+    const existedQAC = await Dean.find({ email: req.session.email });
+    if (req.session.email === undefined || existedQAC.length == 0) {
+        res.redirect('/');
+    } else {
+        const facultyID = existedQAC[0].faculty;
+        const page = req.query.page || 1;
+        const perPage = 5;
+        const totalIdeas = await idea.countDocuments({ approve: true, facultyID: facultyID });
+        const ideas = await idea.find({ approve: true, facultyID: facultyID })
+            .skip((perPage * page) - perPage)
+            .limit(perPage)
+            .exec();
+        const paginateIdeas = paginate(ideas, totalIdeas, perPage, page);
+        res.render('dean/viewIdeaPublished', {
+            ideas: paginateIdeas.docs, currentPage: paginateIdeas.currentPage,
+            hasNextPage: paginateIdeas.hasNextPage, hasPreviousPage: paginateIdeas.hasPreviousPage,
+            nextPage: paginateIdeas.nextPage, previousPage: paginateIdeas.previousPage,
+            totalItems: totalIdeas, totalPages: paginateIdeas.totalPages,
+            loginName: req.session.email
+        });
+    }
+}
+
+const paginate = (items, totalItems, perPage, page) => {
+    const totalPages = Math.ceil(totalItems / perPage);
+    return {
+        totalItems: totalItems,
+        totalPages: totalPages,
+        currentPage: page,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        itemsPerPage: perPage,
+        docs: items
+    };
+}
 
 
 
