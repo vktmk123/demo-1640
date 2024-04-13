@@ -3,11 +3,13 @@ const comment = require('../models/comments');
 const Coordinator = require('../models/Coordinator');
 const event = require("../models/event");
 const fs = require("fs");
+const Student = require("../models/student");
 const Account = require('../models/user');
 const bcrypt = require('bcryptjs');
 const Dean = require('../models/Coordinator');
 
 const nodemailer = require('nodemailer'); // Import nodemailer
+const comments = require('../models/comments');
 
 
 exports.getDean = async (req, res) => {
@@ -185,21 +187,60 @@ exports.viewMostComments = async (req, res) => {
 exports.doComment = async (req, res) => {                                                                            
     let aIdea = await idea.findById(req.body.idIdea);
     let aDean = await Coordinator.findOne({ email: req.session.email });
-    let allDeans = await Coordinator.find();
-    let deanEmails = [];
-    for (let dean of allDeans) {
-      if (dean.email != aDean.email) deanEmails.push(dean.email);
-    }
+    let idIdea = aIdea._id;
+    let studenId = aIdea.author;
+    let aStudent = await Student.findById(studenId);
+    let std_email = aStudent.email;
 
     newComment = new comment({
       ideaID: req.body.idIdea,
       author: aDean,
       comment: req.body.comment,
     });
-  
-     console.log(deanEmails);
+     console.log(std_email);
       newComment = await newComment.save();
       aIdea.comments.push(newComment);
+      let transporter = nodemailer.createTransport({
+        service: "gmail",
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false,
+        auth: {
+          user: "taydmgch190016@fpt.edu.vn",
+          pass: "ycec ixbo vbwk pzlj",
+        },
+        tls: { rejectUnauthorized: false },
+      });
+      let content = "";
+      content += `
+                            <div style="padding: 10px; background-color: #003375">
+                                <div style="padding: 10px; background-color: white;">    
+                        `;
+            content +=
+              '<h4 style="color: #0085ff"> New Feedback </h4> <hr>';
+            content +=
+            '<span style="color: black"> Idea name: ' +
+              aIdea.name.toString() +
+              "</span><br>"; 
+            content +=
+            '<span style="color: black"> Content: ' +
+              newComment.comment.toString() +
+              "</span><br>"; 
+            content += "</div> </div>";
+            let mainOptions = {
+                from: "1640 System",
+                to: std_email,
+                subject:
+                  "New feedback " +
+                  Math.round(Math.random() * 10000).toString(),
+                text: "abc",
+                html: content,
+              };
+  
+              transporter.sendMail(mainOptions, function (err, info) {
+                if (err) console.error("Error: ", err);
+                else console.log("Message sent: ", info.response);
+              });
       aIdea = await aIdea.save();
       res.redirect("/dean/viewMostComments");
     
