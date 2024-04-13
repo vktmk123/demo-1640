@@ -58,7 +58,7 @@ exports.doAddIdea = async (req, res) => {
   let aEvent = await event.findById(idEvent);
   let path = aEvent.url + "/" + req.body.name;
 
-  let allQacs = await Dean.find();
+  let allQacs = await Dean.find({faculty: idFaculty});
   let dean_emails = [];
   for (let dean of allQacs) {
     dean_emails.push(dean.email);
@@ -98,12 +98,13 @@ exports.doAddIdea = async (req, res) => {
               //ok
             }
             let transporter = nodemailer.createTransport({
+              service: "gmail",
               host: "smtp.gmail.com",
-              port: 465,
-              secure: true,
+              port: 587,
+              secure: false,
               auth: {
-                user: "studentgroup4gw@gmail.com",
-                pass: "neymar9701",
+                user: "taydmgch190016@fpt.edu.vn",
+                pass: "ycec ixbo vbwk pzlj",
               },
               tls: { rejectUnauthorized: false },
             });
@@ -113,9 +114,7 @@ exports.doAddIdea = async (req, res) => {
                                 <div style="padding: 10px; background-color: white;">    
                         `;
             content +=
-              '<h4 style="color: #0085ff"> From: ' +
-              aStudent.email.toString() +
-              "</h4> <hr>";
+              '<h4 style="color: #0085ff"> New Submitted Article</h4> <hr>';
             content +=
               '<span style="color: black"> Idea name: ' +
               ideaName.toString() +
@@ -135,10 +134,10 @@ exports.doAddIdea = async (req, res) => {
             }
             content += "</div> </div>";
             let mainOptions = {
-              from: "studentgroup4gw@gmail.com",
+              from: "1640 System",
               to: dean_emails,
               subject:
-                "New submitted idea" +
+                "New submitted article " +
                 Math.round(Math.random() * 10000).toString(),
               text: "abc",
               html: content,
