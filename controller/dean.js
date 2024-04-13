@@ -85,7 +85,7 @@ exports.doChangePassword = async (req, res) => {
 }
 
 // ======================== Most Comments in Idea ========================== //
-exports.viewMostComments = async (req, res) => {
+exports.viewIdea = async (req, res) => {
   const existedDean = await Dean.find({email: req.session.email});
   if (req.session.email === undefined || existedDean.length==0) {
       res.redirect('/');
@@ -135,28 +135,6 @@ exports.viewMostComments = async (req, res) => {
           }
           let mostViewedIdeas = [];
           let counter = 0;
-          function callBack() {
-              if (topViews.length === counter) {
-                  mostViewedIdeas.sort((a, b) => {
-                      let A = a.comment;
-                      let B = b.comment;
-                      if (A < B) {
-                          return 1;
-                      }
-                      else if (A > B) {
-                          return -1;
-                      }
-                      else {
-                          if (a._id < b._id) {
-                              return -1;
-                          }
-                          if (a._id > b._id) {
-                              return 1;
-                          }
-                      };
-                  });
-              }
-          }
           for (let j = 0; j < topViews.length; j++) {
               let i = topViews[j];
               fs.readdir(i.url, (err, files) => {
@@ -170,14 +148,13 @@ exports.viewMostComments = async (req, res) => {
                       idEvent: i.eventID,
                   });
                   counter += 1;
-                  callBack();
               });
 
           };
-          res.render('dean/mostComments', { distance5_ideas: distance5_ideas, mostViewedIdeas: mostViewedIdeas, loginName: req.session.email });
+          res.render('dean/viewIdea', { distance5_ideas: distance5_ideas, mostViewedIdeas: mostViewedIdeas, loginName: req.session.email });
       } catch (e) {
           console.error(e);
-          res.render('dean/mostComments', { distance5_ideas: distance5_ideas, mostViewedIdeas: mostViewedIdeas, loginName: req.session.email });
+          res.render('dean/viewIdea', { distance5_ideas: distance5_ideas, mostViewedIdeas: mostViewedIdeas, loginName: req.session.email });
       }
   }
 }
@@ -242,49 +219,50 @@ exports.doComment = async (req, res) => {
                 else console.log("Message sent: ", info.response);
               });
       aIdea = await aIdea.save();
-      res.redirect("/dean/viewMostComments");
+      res.redirect("/dean/viewIdea");
     
   };
 
-exports.view_ideas_by_faculty = async (req, res) => {
-    let listIdeas = await idea.find().populate('facultyID');
-    console.log(listIdeas);
-    res.render('dean/view_ideas_by_faculty', { 
-        listIdeas: listIdeas, 
-        loginName: req.session.email
-    });
-}
+    exports.viewIdeaByFaculty = async (req, res) => {
+        const existedDean = await Dean.find({ email: req.session.email });
+        if (req.session.email === undefined || existedDean.length == 0) {
+            res.redirect('/');
+        } else {
+            const facultyID = existedDean[0].faculty;
+            const page = req.query.page || 1;
+            const perPage = 5;
+            try {
+                const totalIdeas = await idea.countDocuments({ facultyID: facultyID });
+                const ideas = await idea.find({ facultyID: facultyID })
+                    .skip((perPage * page) - perPage)
+                    .limit(perPage);
 
-exports.viewIdeaByFaculty = async (req, res) => {
-    const existedQAC = await Dean.find({ email: req.session.email });
-    if (req.session.email === undefined || existedQAC.length == 0) {
-        res.redirect('/');
-    } else {
-        const facultyID = existedQAC[0].faculty;
-        const page = req.query.page || 1;
-        const perPage = 5;
-        const totalIdeas = await idea.countDocuments({ facultyID: facultyID });
-        const ideas = await idea.find({ facultyID: facultyID })
-            .skip((perPage * page) - perPage)
-            .limit(perPage)
-            .exec();
-        const paginateIdeas = paginate(ideas, totalIdeas, perPage, page);
-        res.render('dean/viewIdeaByFaculty', {
-            ideas: paginateIdeas.docs, currentPage: paginateIdeas.currentPage,
-            hasNextPage: paginateIdeas.hasNextPage, hasPreviousPage: paginateIdeas.hasPreviousPage,
-            nextPage: paginateIdeas.nextPage, previousPage: paginateIdeas.previousPage,
-            totalItems: totalIdeas, totalPages: paginateIdeas.totalPages,
-            loginName: req.session.email
-        });
+                const paginateIdeas = paginate(ideas, totalIdeas, perPage, page);
+
+                res.render('dean/viewIdeaByFaculty', {
+                    ideas: paginateIdeas.docs,
+                    currentPage: paginateIdeas.currentPage,
+                    hasNextPage: paginateIdeas.hasNextPage,
+                    hasPreviousPage: paginateIdeas.hasPreviousPage,
+                    nextPage: paginateIdeas.nextPage,
+                    previousPage: paginateIdeas.previousPage,
+                    totalItems: totalIdeas,
+                    totalPages: paginateIdeas.totalPages,
+                    loginName: req.session.email,
+                });
+            } catch (error) {
+                console.error(error);
+                res.redirect('/');
+            }
+        }
     }
-}
 
 exports.selectIdeaToPublish = async (req, res) => {
-    const existedQAC = await Dean.find({ email: req.session.email });
-    if (req.session.email === undefined || existedQAC.length == 0) {
+    const existedDean = await Dean.find({ email: req.session.email });
+    if (req.session.email === undefined || existedDean.length == 0) {
         res.redirect('/');
     } else {
-        const facultyID = existedQAC[0].faculty;
+        const facultyID = existedDean[0].faculty;
         const ideaID = req.body.ideaID;
         const ideas = await idea.findByIdAndUpdate({_id: ideaID, facultyID: facultyID}, {approve: true});
         res.redirect('/dean/viewIdeaByFaculty');
@@ -292,11 +270,11 @@ exports.selectIdeaToPublish = async (req, res) => {
 }
 
 exports.viewIdeaPublished = async (req, res) => {
-    const existedQAC = await Dean.find({ email: req.session.email });
-    if (req.session.email === undefined || existedQAC.length == 0) {
+    const existedDean = await Dean.find({ email: req.session.email });
+    if (req.session.email === undefined || existedDean.length == 0) {
         res.redirect('/');
     } else {
-        const facultyID = existedQAC[0].faculty;
+        const facultyID = existedDean[0].faculty;
         const page = req.query.page || 1;
         const perPage = 5;
         const totalIdeas = await idea.countDocuments({ approve: true, facultyID: facultyID });

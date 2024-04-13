@@ -64,6 +64,7 @@
                                     <tr>
                                         <th>Name</th>
                                         <th>URL</th>
+                                        <th>time</th>
                                         <th>Actions</th> <!-- Add Actions column -->
                                     </tr>
                                 </thead>
@@ -71,7 +72,8 @@
                                     {{#each ideas}}
                                     <tr>
                                         <td>{{this.name}}</td>
-                                        <td>{{this.url}}</td>
+                                        <td> <a href ="../../{{this.url}}"> {{this.url}}</a></td>
+                                        <td>{{this.time}}</td>
                                         {{#if this.approve}}
                                             <td>Published</td>
                                         {{else}}

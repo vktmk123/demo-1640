@@ -5,12 +5,11 @@ const deanController = require('../controller/dean');
 
 router.get('/dean',deanController.getDean);
 
-// router.post('/dean/viewMostComments/Comment',deanController.doComment);
-router.get('/dean/viewMostComments',deanController.viewMostComments);
+// router.post('/dean/viewIdea/Comment',deanController.doComment);
+router.get('/dean/viewIdea',deanController.viewIdea);
 
 
-// router.get('/dean/view_ideas_by_faculty',deanController.view_ideas_by_faculty);
-router.post('/dean/viewMostComments/Comment', deanController.doComment);
+router.post('/dean/viewIdea/Comment', deanController.doComment);
 
 router.get('/dean/changePassword', deanController.changePassword);
 router.post('/dean/doChangePassword', deanController.doChangePassword);
@@ -20,4 +19,4 @@ router.post('/dean/publishIdea', deanController.selectIdeaToPublish);
 router.get('/dean/viewIdeaPublished', deanController.viewIdeaPublished);
 
 
-module.exports = router;
+module.exports = router;    
