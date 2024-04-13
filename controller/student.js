@@ -95,6 +95,7 @@ exports.doAddIdea = async (req, res) => {
                 facultyID: idFaculty,
                 approve: false,
               });
+              //ok
             }
             let transporter = nodemailer.createTransport({
               host: "smtp.gmail.com",
