@@ -55,7 +55,7 @@
             <div class="dropdown">
                 <button onclick="myFunction()" class="dropbtn">Most by ↓</button>
                 <div id="myDropdown" class="dropdown-content">
-                    <form action="/dean/viewIdea" method="POST">
+                    <form action="/dean/viewMostComments" method="POST">
                         {{#each distance5_ideas}}
                         <input type="submit" name="last" value="{{this}}">
                         <br>
@@ -146,7 +146,7 @@
                                 <div class="col">
                                     <div class="well" style="width: 700px">
                                         <h4>Comments... <span class="glyphicon glyphicon-comment"></span></h4>
-                                        <form method="post" action='/dean/viewIdea/Comment'>
+                                        <form method="post" action='/dean/viewMostComments/Comment'>
                                             <input type="hidden" name="idEvent" value="{{../idEvent}}">
                                             <input type="hidden" name="idIdea" value="{{idea._id}}" />
                                             <div class="form-group">
