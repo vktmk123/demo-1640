@@ -117,18 +117,13 @@
                                     <ul class="media-list">
                                         <li class="media">
                                             <div class="pull-left">
-                                                {{#if this.annonymously}}
                                                 <img class="rounded-circle" src="/images/user.png" width="40px"
                                                     height="40px" />
-                                                {{else}}
-                                                <img class="rounded-circle" src="/uploads/student/{{this.author.img}}"
-                                                    width="40px" height="40px">
-                                                {{/if}}
                                             </div>
                                             <div class="media-body">
                                                 <h3>
 
-                                                    {{this.author.name}}
+                                                    {{authorName}}
                                                 </h3>
                                                 <div class="well well-lg" style="width: 600px; padding: 10px;">
                                                     <p style="font-size: medium; margin:0; text-align: justify;">

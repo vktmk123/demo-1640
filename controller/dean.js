@@ -87,11 +87,14 @@ exports.doChangePassword = async (req, res) => {
 // ======================== Most Comments in Idea ========================== //
 exports.viewMostComments = async (req, res) => {
   const existedDean = await Dean.find({email: req.session.email});
+  const faculty = existedDean[0].faculty;
+  const authorName = existedDean[0].name;
+  console.log("Faculty: ", faculty)
   if (req.session.email === undefined || existedDean.length==0) {
       res.redirect('/');
   } else {
       try {
-          let listIdeas = await idea.find().populate('comments');
+          let listIdeas = await idea.find({facultyID: faculty}).populate('comments');
           let n_ideas = listIdeas.length;
           let distance5_ideas = [];
           let temp_len_ideas = n_ideas;
@@ -159,6 +162,12 @@ exports.viewMostComments = async (req, res) => {
           }
           for (let j = 0; j < topViews.length; j++) {
               let i = topViews[j];
+              let authorID = i.author;
+              const dean = await Coordinator.findById(authorID);
+              console.log(
+                    "Dean: ",
+                    authorID
+                );
               fs.readdir(i.url, (err, files) => {
                   mostViewedIdeas.push({
                       idea: i,
@@ -166,9 +175,12 @@ exports.viewMostComments = async (req, res) => {
                       value: files,
                       linkValue: i.url.slice(7),
                       name: i.name,
+                      authorName: authorName,
+                      time: i.time,
                       comment: i.comments.length,
                       idEvent: i.eventID,
                   });
+                  console.log(mostViewedIdeas.authorName);
                   counter += 1;
                     callBack();
               });
