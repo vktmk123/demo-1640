@@ -85,7 +85,7 @@ exports.doChangePassword = async (req, res) => {
 }
 
 // ======================== Most Comments in Idea ========================== //
-exports.viewMostComments = async (req, res) => {
+exports.viewIdeaByFaculty = async (req, res) => {
   const existedDean = await Dean.find({email: req.session.email});
   const faculty = existedDean[0].faculty;
   const authorName = existedDean[0].name;
@@ -179,17 +179,18 @@ exports.viewMostComments = async (req, res) => {
                       time: i.time,
                       comment: i.comments.length,
                       idEvent: i.eventID,
+                        approve: i.approve
                   });
                   console.log(mostViewedIdeas.authorName);
-                  counter += 1;
+                  counter += 1; 
                     callBack();
               });
 
           };
-          res.render('dean/mostComments', { distance5_ideas: distance5_ideas, mostViewedIdeas: mostViewedIdeas, loginName: req.session.email });
+          res.render('dean/viewIdeaByFaculty', { distance5_ideas: distance5_ideas, mostViewedIdeas: mostViewedIdeas, loginName: req.session.email });
       } catch (e) {
           console.error(e);
-          res.render('dean/mostComments', { distance5_ideas: distance5_ideas, mostViewedIdeas: mostViewedIdeas, loginName: req.session.email });
+          res.render('dean/viewIdeaByFaculty', { distance5_ideas: distance5_ideas, mostViewedIdeas: mostViewedIdeas, loginName: req.session.email });
       }
   }
 }
@@ -254,92 +255,9 @@ exports.doComment = async (req, res) => {
                 else console.log("Message sent: ", info.response);
               });
       aIdea = await aIdea.save();
-      res.redirect("/dean/viewMostComments");
+      res.redirect("/dean/viewIdeaByFaculty");
     
   };
-
-exports.viewIdeaByFaculty = async (req, res) => {
-    const existedDean = await Dean.find({ email: req.session.email });
-    if (req.session.email === undefined || existedDean.length == 0) {
-        res.redirect('/');
-    } else {
-        const facultyID = existedDean[0].faculty;
-        const page = req.query.page || 1;
-        const perPage = 5;
-        try {
-            const totalIdeas = await idea.countDocuments({ facultyID: facultyID });
-            const ideas = await idea.find({ facultyID: facultyID })
-                .skip((perPage * page) - perPage)
-                .limit(perPage);
-
-            const paginateIdeas = paginate(ideas, totalIdeas, perPage, page);
-            
-            // for (let idea of totalIdeas) {
-            //     countViews.push(idea.comments.length);
-            // }
-
-            function callBack(){
-                if (listIdeas.length === counter) {
-                    listIdeas.sort((a, b) => {
-                        let A = a.comment;
-                        let B = b.comment;
-                        if (A < B) {
-                            return 1;
-                        }
-                        else if (A > B) {
-                            return -1;
-                        }
-                        else {
-                            if (a._id < b._id) {
-                                return -1;
-                            }
-                            if (a._id > b._id) {
-                                return 1;
-                            }
-                        };
-                    });
-                }
-            }
-            let listIdeas = [];
-            let counter = 0;
-            // Iterate over the paginated ideas and asynchronously read files
-            for (let i = 0; i < paginateIdeas.docs.length; i++) {
-                const idea = paginateIdeas.docs[i];
-                fs.readdir(idea.url, (err, files) => {
-                    listIdeas.push({
-                        idea: idea,
-                        id: idea._id,
-                        value: files,
-                        linkValue: idea.url.slice(7),
-                        name: idea.name,
-                        comment: idea.comments.length,
-                        idEvent: idea.eventID,
-                        approve: idea.approve
-                    });
-                    counter += 1;
-                    callBack();
-                });
-            }
-
-            
-            // Render the page with the list of ideas
-            res.render('dean/viewIdeaByFaculty', {
-                ideas: listIdeas,
-                currentPage: paginateIdeas.currentPage,
-                hasNextPage: paginateIdeas.hasNextPage,
-                hasPreviousPage: paginateIdeas.hasPreviousPage,
-                nextPage: paginateIdeas.nextPage,
-                previousPage: paginateIdeas.previousPage,
-                totalItems: totalIdeas,
-                totalPages: paginateIdeas.totalPages,
-                loginName: req.session.email,
-            });
-        } catch (error) {
-            console.error(e);
-            res.redirect('/');
-        }
-    }
-}
 
 exports.selectIdeaToPublish = async (req, res) => {
     const existedQAC = await Dean.find({ email: req.session.email });
@@ -367,8 +285,30 @@ exports.viewIdeaPublished = async (req, res) => {
             .limit(perPage)
             .exec();
         const paginateIdeas = paginate(ideas, totalIdeas, perPage, page);
+
+        let listIdeas = [];
+        let counter = 0;
+        // Iterate over the paginated ideas and asynchronously read files
+        for (let i = 0; i < paginateIdeas.docs.length; i++) {
+            const idea = paginateIdeas.docs[i];
+            fs.readdir(idea.url, (err, files) => {
+                listIdeas.push({
+                    idea: idea,
+                    id: idea._id,
+                    value: files,
+                    linkValue: idea.url.slice(7),
+                    name: idea.name,
+                    comment: idea.comments.length,
+                    idEvent: idea.eventID,
+                    approve: idea.approve
+                });
+                counter += 1;   
+            });
+        }
+
         res.render('dean/viewIdeaPublished', {
-            ideas: paginateIdeas.docs, currentPage: paginateIdeas.currentPage,
+            ideas: listIdeas,
+             currentPage: paginateIdeas.currentPage,
             hasNextPage: paginateIdeas.hasNextPage, hasPreviousPage: paginateIdeas.hasPreviousPage,
             nextPage: paginateIdeas.nextPage, previousPage: paginateIdeas.previousPage,
             totalItems: totalIdeas, totalPages: paginateIdeas.totalPages,

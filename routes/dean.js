@@ -5,11 +5,11 @@ const deanController = require('../controller/dean');
 
 router.get('/dean',deanController.getDean);
 
-// router.post('/dean/viewMostComments/Comment',deanController.doComment);
-router.get('/dean/viewMostComments',deanController.viewMostComments);
+// router.post('/dean/viewIdeaByFaculty/Comment',deanController.doComment);
+router.get('/dean/viewIdeaByFaculty',deanController.viewIdeaByFaculty);
 
 
-router.post('/dean/viewMostComments/Comment', deanController.doComment);
+router.post('/dean/viewIdeaByFaculty/Comment', deanController.doComment);
 
 router.get('/dean/changePassword', deanController.changePassword);
 router.post('/dean/doChangePassword', deanController.doChangePassword);
