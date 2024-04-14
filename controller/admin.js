@@ -1,6 +1,7 @@
 const Account = require("../models/user");
 const Student = require("../models/student");
 const Manager = require("../models/Manager");
+const Guest = require("../models/guest");
 const Coordinator = require("../models/Coordinator");
 const event = require("../models/event");
 const Comments = require("../models/comments");
@@ -93,7 +94,7 @@ exports.doAddManager = async (req, res) => {
       address: req.body.address,
     });
   }
-  let newAccount = new Account({
+  let    = new Account({
     email: req.body.email,
     password: "12345678",
     role: "Manager",
@@ -242,6 +243,7 @@ exports.doAddCoordinator = async (req, res) => {
     res.redirect("/admin/viewCoordinator");
   }
 };
+
 exports.editCoordinator = async (req, res) => {
   let id = req.query.id;
   let aCoordinator = await Coordinator.findById(id);
@@ -251,6 +253,7 @@ exports.editCoordinator = async (req, res) => {
     loginName: req.session.email,
   });
 };
+
 exports.doEditCoordinator = async (req, res) => {
   let id = req.body.id;
   let aCoordinator = await Coordinator.findById(id);
@@ -314,6 +317,7 @@ exports.viewStudent = async (req, res) => {
     loginName: req.session.email,
   });
 };
+
 exports.addStudent = async (req, res) => {
   res.render("admin/addStudent", { loginName: req.session.email });
 };
@@ -422,6 +426,111 @@ exports.searchStudent = async (req, res) => {
     loginName: req.session.email,
   });
 };
+
+
+
+//Guest guest
+exports.viewGuest = async (req, res) => {
+  let listGuest = await Guest.find().populate("faculty");
+  res.render("admin/viewGuest", {
+    listGuest: listGuest,
+    loginName: req.session.email,
+  });
+}
+
+exports.addGuest = async (req, res) => {
+  res.render("admin/addGuest", { loginName: req.session.email });
+};
+
+exports.doAddGuest = async (req, res) => {
+  let newGuest;
+  console.log(req.body);
+  if (req.file) {
+    newGuest = new Guest({
+      name: req.body.name,
+      email: req.body.email,
+      dateOfBirth: new Date(req.body.date),
+      address: req.body.address,
+      img: req.file.filename,
+      faculty: req.body.faculty,
+    });
+  } else {
+    newGuest = new Guest({
+      name: req.body.name,
+      email: req.body.email,
+      dateOfBirth: new Date(req.body.date),
+      address: req.body.address,
+      faculty: req.body.faculty,
+    });
+  }
+  let newAccount = new Account({
+    email: req.body.email,
+    password: "12345678",
+    role: "Guest",
+  });
+  try {
+    await bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(newAccount.password, salt, (err, hash) => {
+        if (err) throw err;
+        newAccount.password = hash;
+        newAccount = newAccount.save();
+      });
+    });
+    newGuest = await newGuest.save();
+    res.redirect("/admin/viewGuest");
+  } catch (error) {
+    console.log(error);
+    res.redirect("/admin/viewGuest");
+  }
+};
+
+exports.editGuest = async (req, res) => {
+  let id = req.query.id;
+  let aGuest = await Guest.findById(id);
+
+  res.render("admin/editGuest", {
+    aGuest: aGuest,
+    loginName: req.session.email,
+  });
+};
+
+exports.doEditGuest = async (req, res) => {
+  let id = req.body.id;
+  let aGuest = await Guest.findById(id);
+  try{
+    if (req.file) {
+      aGuest.img = req.file.filename;
+    }
+    aGuest.name = req.body.name;
+    aGuest.dateOfBirth = new Date(req.body.date);
+    aGuest.address = req.body.address;
+    aGuest.faculty = req.body.faculty;
+    aGuest = await aGuest.save();
+    res.redirect("/admin/viewGuest");
+  }catch(err){
+    console.log(err);
+    res.redirect("/admin/viewGuest");
+  }
+}
+
+exports.deleteGuest = async (req, res) => {
+  let id = req.query.id;
+  let aGuest = await Guest.findById(id);
+  let email = aGuest.email;
+  console.log(email);
+  try {
+    await Account.deleteOne({email: email});
+    console.log("Account is deleted");
+  }catch(err){
+    console.error(err);
+  }
+  await Guest.findByIdAndDelete(id).then((data = {}));
+  res.redirect("/admin/viewGuest");
+}
+
+
+
+
 //Edit date
 exports.viewEvent = async (req, res) => {
   let listEvent = await event.find();

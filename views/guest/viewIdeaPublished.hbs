@@ -1,0 +1,141 @@
+<html lang="en">
+<style>
+    .dropbtn {
+        background-color: #3498DB;
+        color: white;
+        padding: 16px;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .dropbtn:hover,
+    .dropbtn:focus {
+        background-color: #2980B9;
+    }
+
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f1f1f1;
+        min-width: 160px;
+        overflow: auto;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+    }
+
+    .dropdown-content input {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+
+    .dropdown input:hover {
+        background-color: #ddd;
+    }
+
+    .show {
+        display: block;
+    }
+</style>
+{{> head}}
+
+<body class="sb-nav-fixed">
+    {{> guestHeader}}
+    <div class="row">
+        <div class="col" style="margin: 5% 30%;">
+            {{#each ideas}}
+            <div class="container py-5" style="margin-bottom: 3% ; background-color: rgba(225, 230, 238, 0.481);">
+                
+                    <div class="col">
+                        <div class="row" style="margin-left: 1px;">
+                            <ul class="list-group mt-99 text-white">
+                                <li class="list-group-item d-flex justify-content-between align-content-center"
+                                    style="width: 700px">
+                                    <div class="d-flex flex-row">
+                                        <img src="https://img.icons8.com/color/100/000000/folder-invoices.png"
+                                            width="70" height="60" />
+                                        <div class="ml-1">
+                                            <h1><b>Idea name: </b>{{name}}</h1>
+                                            <span style="font-size: 12px;"><b>Time: </b>{{this.time}}</span>
+                                            <br>
+                                            <b style="font-size: 12px; margin-top: 10px; margin-bottom: 10px;">Document:
+                                            </b>
+                                            {{#each value}}
+                                            <span style="font-size: 12px; margin-top: 3px; ">
+                                                <a href="../../{{../this.linkValue}}/{{this}}">{{this}}</a>
+                                            </span>
+                                            <br>
+                                            {{/each}}
+                                            {{#if approve}}
+                                            <h4>Published</h4>
+                                            {{else}}
+                                            <td>
+                                                <form action="/guest/publishIdea" method="POST"> <!-- Add a form for publishing idea -->
+                                                    <input type="hidden" name="ideaID" value="{{id}}">
+                                                    <button type="submit" class="btn btn-primary">Publish</button>
+                                                </form>
+                                            </td>
+                                            {{/if}}
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+
+</body>
+<script>
+    /* When the user clicks on the button, 
+    toggle between hiding and showing the dropdown content */
+    function myFunction() {
+        document.getElementById("myDropdown").classList.toggle("show");
+    }
+
+    // Close the dropdown if the user clicks outside of it
+    window.onclick = function (event) {
+        if (!event.target.matches('.dropbtn')) {
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            var i;
+            for (i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+            }
+        }
+    }
+</script>
+<script>
+    $(function () {
+        $(".see-less").hide();
+        $(".see-more").click(function (e) { // click event for load more
+            e.preventDefault();
+            $(this).siblings(".user-comment-box:hidden").slice(-4).show(); // select next 5 hidden divs and show them
+            if ($(this).siblings(".user-comment-box:hidden").length == 0) {
+                $(this).hide();
+            }
+            if ($(this).siblings(".user-comment-box").length != 0) {
+                $(this).siblings(".see-less").show();
+            }
+        });
+        $(".see-less").click(function (e) { // click event for load more
+            e.preventDefault();
+            $(this).hide();
+            $(this).siblings(".user-comment-box").hide();
+            $(this).siblings(".see-more").show();
+        });
+    });
+</script>
+
+</html>

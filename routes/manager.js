@@ -28,14 +28,14 @@ router.get("/manager/downloadZip", isMng, managerController.downloadZip);
 // router.get("/manager/downloadCSV", isMng, managerController.downloadCSV);
 
 router.get(
-  "/manager/numberOfIdeasByYear",
+  "/manager/numberOfContributionsPerFaculty",
   isMng,
-  managerController.numberOfIdeasByYear
+  managerController.numberOfContributionsPerFaculty
 );
 router.post(
-  "/manager/numberOfIdeasByYear",
+  "/manager/numberOfContributionsPerFaculty",
   isMng,
-  managerController.numberOfIdeasByYear
+  managerController.numberOfContributionsPerFaculty
 );
 router.get(
   "/manager/numberOfIdeasByYear2",

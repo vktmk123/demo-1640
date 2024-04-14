@@ -1,0 +1,30 @@
+<html lang="en">
+{{> head}}
+
+<body class="sb-nav-fixed">
+    {{> managerHeader}}
+    <div id="container" style="width: 70%; height: 80%; margin: -2% 15%; padding: 0;"></div>
+
+    <script type="text/javascript">
+        anychart.onDocumentReady(function () {
+            // set the data
+            let data = {{{ contributionsPerFaculty }}};
+            console.log(data);
+            // create the chart
+            var chart = anychart.bar();
+            // set the chart title
+            chart.title("Number of Contributions Per Faculty");
+            // add the data
+            chart.data(data);
+            // set x-axis title
+            chart.xAxis().title("Faculty");
+            // set y-axis title
+            chart.yAxis().title("Number of Contributions");
+            // display the chart in the container
+            chart.container('container');
+            chart.draw();
+        });
+    </script>
+</body>
+
+</html>

@@ -33,7 +33,13 @@ exports.handleLogin = async (req, res) => {
           req.session.email = username;
           req.session.manager = true;
           res.redirect("/manager_index");
-        } else {
+        } 
+        else if (user.role == "Guest") {
+          req.session.user = user;
+          req.session.email = username;
+          req.session.manager = true;
+          res.redirect("/guest");
+        }else {
           req.session.user = user;
           req.session.email = username;
           req.session.QAcoordinator = true;

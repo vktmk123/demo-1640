@@ -148,4 +148,32 @@ router.post("/admin/doAddEvent", isAdmin, adminController.doAddEvent);
 router.get("/admin/viewSubmittedIdeas", isAdmin, adminController.viewSubmittedIdeas);
 router.get("/admin/viewEventDetail", isAdmin, adminController.viewEventDetail);
 router.post("/admin/viewEventDetail", isAdmin, adminController.viewEventDetail);
+
+
+//Guest
+const storageGuest = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, "public/uploads/guest");
+  },
+  //add back the extension
+  filename: function (req, file, callback) {
+    callback(null, Date.now() + file.originalname);
+  },
+});
+const uploadGuest = multer({
+  storage: storageGuest,
+  limits: {
+    fieldSize: 1024 * 1024 * 3,
+  },
+});
+
+router.get("/admin/viewGuest", isAdmin, adminController.viewGuest);
+router.get("/admin/addGuest", isAdmin, adminController.addGuest);
+router.post("/admin/doAddGuest", isAdmin, uploadGuest.single("picture"), adminController.doAddGuest);
+router.get("/admin/editGuest", isAdmin, adminController.editGuest);
+router.post("/admin/doEditGuest", isAdmin, uploadGuest.single("picture"), adminController.doEditGuest);
+router.get("/admin/deleteGuest", isAdmin, adminController.deleteGuest);
+
+
+
 module.exports = router;

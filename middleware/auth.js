@@ -17,3 +17,8 @@ exports.isDean = function (req, res, next) {
   if (req.session && req.session.Dean) return next();
   else return res.sendStatus(401);
 };
+
+exports.isGuest = function (req, res, next) {
+  if (req.session && req.session.guest) return next();
+  else return res.sendStatus(401);
+}

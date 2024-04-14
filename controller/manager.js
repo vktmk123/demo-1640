@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const Event = require("../models/event");
 const idea = require("../models/ideas");
 const User = require("../models/user");
+const Faculty = require("../models/faculty");
 const validation = require("./validation");
 const Comment = require("../models/comments");
 const AdmZip = require("adm-zip");
@@ -71,65 +72,6 @@ exports.getAddEvent = async (req, res) => {
   res.render("manager/managerAddEvent", { loginName: req.session.email });
 };
 
-// exports.doAddEvent = async (req, res) => {
-//   const fs = require("fs");
-//   let date = new Date();
-//   let newDate = new Date();
-//   if (date.getMonth() == "1" || "3" || "5" || "7" || "8" || "10" || "12") {
-//     if (date.getDate() + 14 > 31) {
-//       let tempDate = 14 - (31 - date.getDate() + 1);
-//       let tempMonth = date.getMonth() + 1;
-//       newDate.setDate(tempDate);
-//       newDate.setMonth(tempMonth);
-//     } else {
-//       newDate.setDate(date.getDate() + 14);
-//     }
-//   } else if (date.getMonth() == "4" || "6" || "9" || "11") {
-//     if (date.getDate() + 14 > 30) {
-//       let tempDate = 14 - (30 - date.getDate() + 1);
-//       let tempMonth = date.getMonth() + 1;
-//       newDate.setDate(tempDate);
-//       newDate.setMonth(tempMonth);
-//     } else {
-//       newDate.setDate(date.getDate() + 14);
-//     }
-//   } else if (date.getMonth() == "2") {
-//     if (date.getDate() + 14 > 28) {
-//       let tempDate = 14 - (28 - date.getDate() + 1);
-//       let tempMonth = date.getMonth() + 1;
-//       newDate.setDate(tempDate);
-//       newDate.setMonth(tempMonth);
-//     } else {
-//       newDate.setDate(date.getDate() + 14);
-//     }
-//   }
-//   console.log(req.body.name);
-//   fs.access("public/folder/" + req.body.name, (error) => {
-//     // To check if the given directory
-//     // already exists or not
-//     if (error) {
-//       // If current directory does not exist
-//       // then create it
-//       fs.mkdir("public/folder/" + req.body.name, (error) => {
-//         if (error) {
-//           console.log(error);
-//         } else {
-//           console.log("New Directory created successfully !!");
-//         }
-//       });
-//     } else {
-//       console.log("Given Directory already exists !!");
-//     }
-//   });
-//   await Event.create({
-//     name: req.body.name,
-//     description: req.body.description,
-//     dateStart: date,
-//     dateEnd: newDate,
-//     url: "public/folder/" + req.body.name,
-//   });
-//   res.redirect("/manager_index");
-// };
 
 exports.getViewEvent = async (req, res) => {
   let listEvent = await Event.find();
@@ -357,50 +299,28 @@ exports.downloadZip = async (req, res) => {
   res.send(data);
 };
 
-exports.numberOfIdeasByYear = async (req, res) => {
-  let yearStart = 2020;
-  let yearEnd = 2025;
-  if (req.body == {}) {
-    //console.log(req.body)
-    yearStart = parseInt(req.body.from);
-    yearEnd = parseInt(req.body.to);
+exports.numberOfContributionsPerFaculty = async (req, res) => {
+  try {
+    const faculties = await Faculty.find({});
+    const contributionsPerFaculty = await Promise.all(
+      faculties.map(async (faculty) => {
+        const numberOfContributions = await idea.countDocuments({ faculty: faculty._id });
+        return {
+          facultyName: faculty.name,
+          numberOfContributions: numberOfContributions
+        };
+      })
+    );
+    res.render("manager/numberOfContributionsPerFaculty", {
+      contributionsPerFaculty: contributionsPerFaculty,
+      loginName: req.session.email
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
   }
-  let dateStart;
-  let dateEnd;
-  let listYear = [];
-  let i = yearStart;
-  async function loop() {
-    if (i <= yearEnd) {
-      dateStart = new Date(i + "-01-01");
-      dateEnd = new Date(i + "-12-31");
-      console.log(dateEnd);
-      let noIdeas = await idea
-        .find({
-          time: {
-            $gte: dateStart,
-            $lt: dateEnd,
-          },
-        })
-        .count();
-      // console.log(i);
-      // console.log(noIdeas);
-      listYear.push({
-        x: i,
-        value: noIdeas,
-      });
-      i += 1;
-      // console.log(listYear);
-      loop();
-    } else {
-      console.log(listYear);
-      res.render("manager/numberOfIdeasByYear", {
-        listYear: JSON.stringify(listYear),
-        loginName: req.session.email,
-      });
-    }
-  }
-  loop();
 };
+
 
 exports.numberOfIdeasByYear2 = async (req, res) => {
   let year = 2024;
@@ -445,7 +365,7 @@ exports.numberOfIdeasByYear2 = async (req, res) => {
 };
 
 exports.numberOfPeople = async (req, res) => {
-  let role = ["Manager", "QAcoordinator", "Student"];
+  let role = ["business", "Computer", "Design"];
   let data = [];
   let counter = 0;
   role.forEach(async (i) => {
