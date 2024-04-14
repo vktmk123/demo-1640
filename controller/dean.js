@@ -308,20 +308,7 @@ exports.viewIdeaByFaculty = async (req, res) => {
                     callBack();
                 });
             }
-                // const files = await fs.promises.readdir(idea.url);
-                // listIdeas.push({
-                //     idea: idea,
-                //     id: idea._id,
-                //     value: files,
-                //     linkValue: idea.url.slice(7),
-                //     name: idea.name,
-                //     comment: idea.comments.length,
-                //     idEvent: idea.eventID,
-                //     approve: idea.approve
-                // });
-                // counter += 1;
-                // callBack();
-            // }
+
             
             // Render the page with the list of ideas
             res.render('dean/viewIdeaByFaculty', {
