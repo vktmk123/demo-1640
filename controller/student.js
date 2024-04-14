@@ -222,7 +222,7 @@ exports.viewEventDetail = async (req, res) => {
   let listFiles = [];
   try {
     let listIdeas = await idea
-      .find({ author: ideaID })
+      .find({ author: ideaID, eventID: id  })
       .populate({ path: "comments", populate: { path: "author" } })
       .populate("author");
 
