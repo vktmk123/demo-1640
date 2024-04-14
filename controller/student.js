@@ -200,7 +200,9 @@ exports.viewSubmittedIdeas = async (req, res) => {
 };
 
 exports.viewEventDetail = async (req, res) => {
+  const student = await Student.findOne({ email: req.session.email });
   let id;
+  let ideaID = student._id;
   let noPage;
   let page = 1;
   let sortBy = req.query.sort;
@@ -220,7 +222,7 @@ exports.viewEventDetail = async (req, res) => {
   let listFiles = [];
   try {
     let listIdeas = await idea
-      .find({ eventID: id })
+      .find({ author: ideaID })
       .populate({ path: "comments", populate: { path: "author" } })
       .populate("author");
 
