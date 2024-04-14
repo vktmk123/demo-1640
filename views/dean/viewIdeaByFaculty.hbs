@@ -55,7 +55,7 @@
             <div class="dropdown">
                 <button onclick="myFunction()" class="dropbtn">Most by ↓</button>
                 <div id="myDropdown" class="dropdown-content">
-                    <form action="/dean/viewMostComments" method="POST">
+                    <form action="/dean/viewIdeaByFaculty" method="POST">
                         {{#each distance5_ideas}}
                         <input type="submit" name="last" value="{{this}}">
                         <br>
@@ -64,7 +64,7 @@
                 </div>
             </div>
             {{/ifEquals}}
-            {{#each ideas}}
+            {{#each mostViewedIdeas}}
             <div class="container py-5" style="margin-bottom: 3% ; background-color: rgba(225, 230, 238, 0.481);">
                 <div class="row">
                     <div class="col">
@@ -77,7 +77,7 @@
                                             width="70" height="60" />
                                         <div class="ml-1">
                                             <h1><b>Idea name: </b>{{name}}</h1>
-                                            <span style="font-size: 12px;"><b>Time: </b>{{idea.time}}</span>
+                                            <span style="font-size: 12px;"><b>Time: </b>{{time}}</span>
                                             <br>
                                             <b style="font-size: 12px; margin-top: 10px; margin-bottom: 10px;">Document:
                                             </b>
@@ -127,18 +127,13 @@
                                     <ul class="media-list">
                                         <li class="media">
                                             <div class="pull-left">
-                                                {{#if this.annonymously}}
                                                 <img class="rounded-circle" src="/images/user.png" width="40px"
                                                     height="40px" />
-                                                {{else}}
-                                                <img class="rounded-circle" src="/uploads/student/{{this.author.img}}"
-                                                    width="40px" height="40px">
-                                                {{/if}}
                                             </div>
                                             <div class="media-body">
                                                 <h3>
 
-                                                    {{this.author.name}}
+                                                    {{authorName}}
                                                 </h3>
                                                 <div class="well well-lg" style="width: 600px; padding: 10px;">
                                                     <p style="font-size: medium; margin:0; text-align: justify;">
@@ -156,7 +151,7 @@
                                 <div class="col">
                                     <div class="well" style="width: 700px">
                                         <h4>Comments... <span class="glyphicon glyphicon-comment"></span></h4>
-                                        <form method="post" action='/dean/viewMostComments/Comment'>
+                                        <form method="post" action='/dean/viewIdeaByFaculty/Comment'>
                                             <input type="hidden" name="idEvent" value="{{../idEvent}}">
                                             <input type="hidden" name="idIdea" value="{{idea._id}}" />
                                             <div class="form-group">
