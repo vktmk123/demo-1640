@@ -89,7 +89,7 @@ exports.viewIdeaByFaculty = async (req, res) => {
   const existedDean = await Dean.find({email: req.session.email});
   const faculty = existedDean[0].faculty;
   const authorName = existedDean[0].name;
-  console.log("Faculty: ", faculty)
+  console.log("Faculty: ", existedDean[0])
   if (req.session.email === undefined || existedDean.length==0) {
       res.redirect('/');
   } else {
