@@ -219,8 +219,8 @@ exports.doComment = async (req, res) => {
         port: 587,
         secure: false,
         auth: {
-          user: "taydmgch190016@fpt.edu.vn",
-          pass: "ycec ixbo vbwk pzlj",
+          user: "testnodemailer150601@gmail.com ",
+          pass: "lmiu qgdk kbux hwkx",
         },
         tls: { rejectUnauthorized: false },
       });

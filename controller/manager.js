@@ -356,7 +356,7 @@ exports.numberOfIdeasByYear2 = async (req, res) => {
     counter += 1;
     if (counter === listEvent.length) {
       console.log(data);
-      res.render("manager/numberOfIdeasByYear2", {
+      res.render("manager/contributionbyeachfaculty", {
         data: JSON.stringify(data),
         loginName: req.session.email,
       });

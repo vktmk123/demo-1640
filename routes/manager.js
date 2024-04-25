@@ -38,12 +38,12 @@ router.post(
   managerController.numberOfContributionsPerFaculty
 );
 router.get(
-  "/manager/numberOfIdeasByYear2",
+  "/manager/contributionbyeachfaculty",
   isMng,
   managerController.numberOfIdeasByYear2
 );
 router.post(
-  "/manager/numberOfIdeasByYear2",
+  "/manager/contributionbyeachfaculty",
   isMng,
   managerController.numberOfIdeasByYear2
 );
